@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Plus, ChevronDown } from 'lucide-react';
+import clsx from 'clsx';
 import {
   Dialog,
   DialogContent,
@@ -49,7 +50,7 @@ export const CardCreateDialog = ({ children }: { children?: React.ReactNode }) =
         { children }
       </DialogTrigger>
       <DialogContent className='w-full'>
-        <DialogHeader className=''>
+        <DialogHeader>
           <DialogTitle className='flex items-center gap-2'>
             <div>
               { createCardProps.type === 'flashcard' && 'Flash card' }
@@ -75,7 +76,7 @@ export const CardCreateDialog = ({ children }: { children?: React.ReactNode }) =
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className='h-120 space-y-4'>
-          <div className='flex gap-2 w-full h-full'>
+          <div className={clsx('flex gap-2 w-full h-full font-mono', createCardProps.type === 'taskcard' && 'flex-col')}>
             <textarea
               id='front'
               value={createCardProps.front}
