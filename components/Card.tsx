@@ -1,4 +1,6 @@
 import type { Card } from '@/lib/cards'
+import { Button } from '@/components/ui/button';
+import { useState } from 'react';
 
 type CardProps = {
   card: Card;
@@ -9,10 +11,25 @@ export const CardComponent = ({
   card,
   children
 }: CardProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <div>
-      {card.front}
-      {card.back}
+    <div className='
+      flex flex-col items-start gap-4 p-6 rounded
+      text-card-foreground bg-card
+    '>
+      <div>
+        {card.front}
+      </div>
+      { !isOpen ?
+          <Button onClick={() => setIsOpen(!isOpen)}>
+            Show Answer
+          </Button> :
+          <div className='flex flex-col gap-2'>
+            <div>Result:</div>
+            <div>{card.back}</div>
+          </div>
+      }
     </div>
   )
 }

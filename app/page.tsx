@@ -25,7 +25,7 @@ export default function DeckPage() {
   return (
     <div className="min-h-screen justify-center">
         <Toolbar />
-        <main className='w-6/12 m-auto mt-20'>
+        <main className='flex flex-col gap-10 m-auto mt-20 w-6/12'>
           <section>
             <h1>Javascript</h1>
             <p className="text-muted-foreground">

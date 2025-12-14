@@ -140,6 +140,10 @@
     @apply leading-7 [&:not(:first-child)]:mt-6;
   }
 
+  small {
+    @apply text-sm leading-none font-medium;
+  }
+
   blockquote {
     @apply mt-6 border-l-2 pl-6 italic;
   }
