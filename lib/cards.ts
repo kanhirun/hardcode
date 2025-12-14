@@ -1,6 +1,7 @@
 import { getDB } from './db';
 
 export type Card = {
+  type: 'flashcard' | 'taskcard';
   front: string;
   back: string;
 }

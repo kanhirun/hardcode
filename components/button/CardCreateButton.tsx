@@ -1,23 +1,32 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
+import { Plus, ChevronDown } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
+  DialogTrigger
 } from '@/components/ui/dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { useMutation } from '@tanstack/react-query';
 import { createCard, type CreateCardProps } from '@/lib/cards';
 import { useState } from 'react';
 
 export const CardCreateButton = () => {
   const [open, setOpen] = useState(false);
-  const initState = { front: '', back: '' };
-  const [createCardProps, setCreateCardProps] = useState<CreateCardProps>(initState);
+  const initState: CreateCardProps = {
+    type: 'flashcard',
+    front: '',
+    back: ''
+  };
+  const [createCardProps, setCreateCardProps] = useState(initState);
   const {
     mutate: createCardAction,
     isPending,
@@ -44,10 +53,29 @@ export const CardCreateButton = () => {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add New Card</DialogTitle>
-          <DialogDescription>
-            Create a new flashcard by entering front and back content.
-          </DialogDescription>
+          <DialogTitle className='flex items-center gap-2'>
+            <div>
+              { createCardProps.type === 'flashcard' && 'Flash card' }
+              { createCardProps.type === 'taskcard' && 'Task card' }
+            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant='ghost' size='sm' className='h-8 w-8 p-0'>
+                  <ChevronDown className='h-4 w-4' />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align='end'>
+                <DropdownMenuItem 
+                  onClick={() => setCreateCardProps({ ...createCardProps, type: 'flashcard' })}>
+                    Flash card
+                  </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => setCreateCardProps({ ...createCardProps, type: 'taskcard' })}>
+                    Task card
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className='space-y-4'>
           <div>
