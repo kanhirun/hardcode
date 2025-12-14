@@ -1,6 +1,7 @@
 import type { Card } from '@/lib/cards'
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
+import { Input } from '@/components/ui/input';
 
 type CardProps = {
   card: Card;
@@ -28,9 +29,9 @@ export const CardComponent = ({
           flex flex-col items-start gap-4 p-6 rounded
           text-card-foreground bg-card
         '>
-          <code className='whitespace-pre-line'>
+          <p className='font-mono whitespace-pre-line'>
             {card.front}
-          </code>
+          </p>
           { !isOpen ?
               <Button onClick={handleOpen}>
                 Show Answer
@@ -48,12 +49,15 @@ export const CardComponent = ({
           flex flex-col items-start gap-4 p-6 rounded
           text-card-foreground bg-card
         '>
-          <code className='whitespace-pre-line'>
+          <p className='font-mono whitespace-pre-line'>
             {card.front}
-          </code>
-          <Button>
-            Run
-          </Button>
+          </p>
+          <div className='flex gap-2'>
+            <Input />
+            <Button>
+              Run
+            </Button>
+          </div>
         </div>
      );
   default:

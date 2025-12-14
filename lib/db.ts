@@ -19,7 +19,7 @@ export const getDB = (): Promise<IDBDatabase> => {
       const db = (e.target as IDBOpenDBRequest).result;
 
       if (!db.objectStoreNames.contains('cards')) {
-        db.createObjectStore("cards", { keyPath: 'front', autoIncrement: true });
+        db.createObjectStore("cards", { keyPath: 'id', autoIncrement: true });
       }
     }
     
