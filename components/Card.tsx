@@ -25,7 +25,7 @@ export const CardComponent = ({
       flex flex-col items-start gap-4 p-6 rounded
       text-card-foreground bg-card
     '>
-      <code>
+      <code className='whitespace-pre-line'>
         {card.front}
       </code>
       { !isOpen ?
