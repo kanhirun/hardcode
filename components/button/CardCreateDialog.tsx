@@ -47,7 +47,7 @@ export const CardCreateDialog = ({ children }: { children?: React.ReactNode }) =
       <DialogTrigger asChild>
         { children }
       </DialogTrigger>
-      <DialogContent className='w-full'>
+      <DialogContent style={{ maxWidth: 'none', width: '800px' }}>
         <Tabs defaultValue="flashcard">
           <TabsList>
             <TabsTrigger value="flashcard">Flash Card</TabsTrigger>
@@ -58,20 +58,20 @@ export const CardCreateDialog = ({ children }: { children?: React.ReactNode }) =
             onSubmit={(e) => { e.preventDefault(); mutate(createCardProps) }}
             className='flex flex-col h-100 space-y-4'
           >
-            <TabsContent value="flashcard" className='flex-1'>
+            <TabsContent value="flashcard">
               <div className='flex gap-2 h-full font-mono'>
                 <textarea
                   id='front'
                   value={createCardProps.front}
                   onChange={(e) => setCreateCardProps({ ...createCardProps, front: e.target.value })}
-                  className='p-2 border rounded-md'
+                  className='flex-1 p-2 border rounded-md'
                   required
                 />
                 <textarea
                   id='back'
                   value={createCardProps.back}
                   onChange={(e) => setCreateCardProps({ ...createCardProps, back: e.target.value })}
-                  className='p-2 border rounded-md'
+                  className='flex-1 p-2 border rounded-md'
                   required={createCardProps.type === 'flashcard'}
                 />
               </div>
