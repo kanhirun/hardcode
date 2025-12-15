@@ -20,10 +20,8 @@ type SplitPaneProps = {
 }
 
 export const CardCreateDialog = ({ children }: { children?: React.ReactNode }) => {
-  const initState: CreateCardProps = {
-    type: 'flashcard',
-    front: '',
-    back: ''
+  const initState: Partial<CreateCardProps> = {
+    type: 'flashcard'
   };
 
   const [open, setOpen] = useState(false);
