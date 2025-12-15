@@ -23,7 +23,7 @@ export const CardComponent = ({
   }
 
   switch (card.type) {
-    case 'flashcard':
+    case 'flash':
       return (
         <div className='
           flex flex-col items-start gap-4 p-6 rounded
@@ -43,18 +43,18 @@ export const CardComponent = ({
           }
         </div>
       );
-   case 'taskcard':
+   case 'task':
      return (
         <div className='
-          flex flex-col items-start gap-4 p-6 rounded
-          text-card-foreground bg-card
+          flex flex-col items-start gap-8 p-6 rounded
+          font-mono text-card-foreground bg-card
         '>
-          <p className='font-mono whitespace-pre-line'>
-            {card.front}
+          <p className='whitespace-pre-line'>
+            {card.text}
           </p>
           <div className='flex gap-2'>
             <Input />
-            <Button>
+            <Button className='font-sans'>
               Run
             </Button>
           </div>
