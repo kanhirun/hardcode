@@ -20,7 +20,7 @@ type SplitPaneProps = {
 }
 
 export const CardCreateDialog = ({ children }: { children?: React.ReactNode }) => {
-  const initState: Partial<CreateCardProps> = {
+  const initState: Partial<any> = {
     type: 'flashcard'
   };
 
@@ -28,6 +28,9 @@ export const CardCreateDialog = ({ children }: { children?: React.ReactNode }) =
   const [createCardProps, setCreateCardProps] = useState(initState);
   const {mutate, isPending} = useMutation({ 
     mutationFn: createCard,
+    onError: (err) => {
+      console.error(err);
+    },
     onSuccess: () => {
       setOpen(false);
       setCreateCardProps(initState);
@@ -40,13 +43,16 @@ export const CardCreateDialog = ({ children }: { children?: React.ReactNode }) =
         { children }
       </DialogTrigger>
       <DialogContent style={{ maxWidth: 'none', width: '800px' }}>
+        <DialogTitle>
+          Create a card
+        </DialogTitle>
         <Tabs defaultValue="flashcard">
           <TabsList>
-            <TabsTrigger value="flashcard">
+            <TabsTrigger value="flashcard" onClick={() => setCreateCardProps({ ...createCardProps, type: 'flashcard' })}>
               <SplitSquareHorizontal />
               Flash Card
             </TabsTrigger>
-            <TabsTrigger value="taskcard">
+            <TabsTrigger value="taskcard" onClick={() => setCreateCardProps({ ...createCardProps, type: 'taskcard' })}>
               <SplitSquareVertical />
               Task Card
             </TabsTrigger>
@@ -73,33 +79,32 @@ export const CardCreateDialog = ({ children }: { children?: React.ReactNode }) =
                   value={createCardProps.back}
                   onChange={(e) => setCreateCardProps({ ...createCardProps, back: e.target.value })}
                   className='flex-1 p-2 border rounded-md'
-                  required={createCardProps.type === 'flashcard'}
+                  required
                 />
               </div>
             </TabsContent>
             <TabsContent value="taskcard">
               <div className='flex flex-col h-full gap-2'>
                 <textarea
-                  id='front'
-                  value={createCardProps.front}
-                  onChange={(e) => setCreateCardProps({ ...createCardProps, front: e.target.value })}
+                  id='text'
+                  value={createCardProps.text}
+                  onChange={(e) => setCreateCardProps({ ...createCardProps, text: e.target.value })}
                   className='flex-1 p-2 border rounded-md'
                   required
                 />
                 <textarea
-                  id='back'
-                  value={createCardProps.back}
-                  onChange={(e) => setCreateCardProps({ ...createCardProps, back: e.target.value })}
+                  id='template'
+                  value={createCardProps.template}
+                  onChange={(e) => setCreateCardProps({ ...createCardProps, template: e.target.value })}
                   className='p-2 border rounded-md font-mono'
-                  required={createCardProps.type === 'flashcard'}
                 />
               </div>
             </TabsContent>
             <TabsContent value="tests" className='flex-1'>
               <textarea
                 id='tests'
-                value={createCardProps.back}
-                onChange={(e) => setCreateCardProps({ ...createCardProps, back: e.target.value })}
+                value={createCardProps.tests}
+                onChange={(e) => setCreateCardProps({ ...createCardProps, tests: e.target.value })}
                 className='w-full h-full p-2 border rounded-md'
                 required={createCardProps.type === 'taskcard'}
               />
