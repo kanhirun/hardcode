@@ -3,17 +3,17 @@ import * as z from 'zod';
 
 export const BaseSchema = z.object({
   id: z.number(),
-  type: z.enum(['flashcard', 'taskcard']),
+  type: z.enum(['flash', 'task']),
 })
 
 const FlashSchema = BaseSchema.extend({
-  type: z.literal('flashcard'),
+  type: z.literal('flash'),
   front: z.string(), 
   back: z.string(),
 })
 
 const TaskSchema = BaseSchema.extend({
-  type: z.literal('taskcard'),
+  type: z.literal('task'),
   text: z.string(),
   template: z.string(),
   tests: z.string(),

@@ -11,7 +11,7 @@ import {
   DialogTrigger
 } from '@/components/ui/dialog';
 import { useMutation } from '@tanstack/react-query';
-import { createCard, type CreateCardProps } from '@/lib/cards';
+import { createCard } from '@/lib/cards';
 import { useState } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 
@@ -48,11 +48,11 @@ export const CardCreateDialog = ({ children }: { children?: React.ReactNode }) =
         </DialogTitle>
         <Tabs defaultValue="flashcard">
           <TabsList>
-            <TabsTrigger value="flashcard" onClick={() => setCreateCardProps({ ...createCardProps, type: 'flashcard' })}>
+            <TabsTrigger value="flash" onClick={() => setCreateCardProps({ ...createCardProps, type: 'flash' })}>
               <SplitSquareHorizontal />
               Flash Card
             </TabsTrigger>
-            <TabsTrigger value="taskcard" onClick={() => setCreateCardProps({ ...createCardProps, type: 'taskcard' })}>
+            <TabsTrigger value="task" onClick={() => setCreateCardProps({ ...createCardProps, type: 'task' })}>
               <SplitSquareVertical />
               Task Card
             </TabsTrigger>
@@ -65,7 +65,7 @@ export const CardCreateDialog = ({ children }: { children?: React.ReactNode }) =
             onSubmit={(e) => { e.preventDefault(); mutate(createCardProps) }}
             className='flex flex-col h-100 space-y-4'
           >
-            <TabsContent value="flashcard">
+            <TabsContent value="flash">
               <div className='flex gap-2 h-full font-mono'>
                 <textarea
                   id='front'
@@ -83,7 +83,7 @@ export const CardCreateDialog = ({ children }: { children?: React.ReactNode }) =
                 />
               </div>
             </TabsContent>
-            <TabsContent value="taskcard">
+            <TabsContent value="task">
               <div className='flex flex-col h-full gap-2'>
                 <textarea
                   id='text'
@@ -106,7 +106,7 @@ export const CardCreateDialog = ({ children }: { children?: React.ReactNode }) =
                 value={createCardProps.tests}
                 onChange={(e) => setCreateCardProps({ ...createCardProps, tests: e.target.value })}
                 className='w-full h-full p-2 border rounded-md'
-                required={createCardProps.type === 'taskcard'}
+                required={createCardProps.type === 'task'}
               />
             </TabsContent>
             <div className='flex justify-end gap-2'>
