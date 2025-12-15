@@ -52,10 +52,7 @@ export const CardCreateDialog = ({ children }: { children?: React.ReactNode }) =
               <SplitSquareVertical />
               Task Card
             </TabsTrigger>
-            <TabsTrigger value="tests">
-              <Code />
-              Tests
-            </TabsTrigger>
+            <TabsTrigger value="tests">Tests</TabsTrigger>
           </TabsList>
           <form 
             onSubmit={(e) => { e.preventDefault(); mutate(createCardProps) }}
