@@ -80,7 +80,7 @@ export const CardCreateDialog = ({ children }: { children?: React.ReactNode }) =
               </div>
             </TabsContent>
             <TabsContent value="taskcard">
-              <div className='flex flex-col h-full gap-2 font-mono'>
+              <div className='flex flex-col h-full gap-2'>
                 <textarea
                   id='front'
                   value={createCardProps.front}
@@ -92,7 +92,7 @@ export const CardCreateDialog = ({ children }: { children?: React.ReactNode }) =
                   id='back'
                   value={createCardProps.back}
                   onChange={(e) => setCreateCardProps({ ...createCardProps, back: e.target.value })}
-                  className='p-2 border rounded-md'
+                  className='p-2 border rounded-md font-mono'
                   required={createCardProps.type === 'flashcard'}
                 />
               </div>
