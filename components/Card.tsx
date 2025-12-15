@@ -1,7 +1,8 @@
 import type { Card } from '@/lib/cards'
 import { Button } from '@/components/ui/button';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { Input } from '@/components/ui/input';
+import { WebContainerContext } from '@/components/providers';
 
 type CardProps = {
   card: Card;
@@ -15,6 +16,7 @@ export const CardComponent = ({
   children
 }: CardProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const webContainer = useContext(WebContainerContext);
 
   // TODO: Move me to flashcard
   const handleOpen = () => {
@@ -44,6 +46,20 @@ export const CardComponent = ({
         </div>
       );
    case 'task':
+     const testFile = {
+       'index.md': {
+         file: {
+           contents: `
+             hello world!
+           `
+         }
+       }
+     }
+     console.log(webContainer);
+     webContainer?.mount(testFile).then(() => {
+       webContainer.fs.readFile('index.md', 'utf8').then(console.log);
+     });
+
      return (
         <div className='
           flex flex-col items-start gap-8 p-6 rounded
