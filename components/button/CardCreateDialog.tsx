@@ -6,7 +6,6 @@ import clsx from 'clsx';
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog';
@@ -14,10 +13,6 @@ import { useMutation } from '@tanstack/react-query';
 import { createCard } from '@/lib/cards';
 import { useState } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-
-type SplitPaneProps = {
-  orientation: "horizontal" | "vertical";
-}
 
 export const CardCreateDialog = ({ children }: { children?: React.ReactNode }) => {
   const initState: Partial<any> = {
@@ -86,25 +81,55 @@ export const CardCreateDialog = ({ children }: { children?: React.ReactNode }) =
             <TabsContent value="task">
               <div className='flex flex-col h-full gap-2'>
                 <textarea
-                  id='text'
+                  id='index.md'
                   value={createCardProps.text}
-                  onChange={(e) => setCreateCardProps({ ...createCardProps, text: e.target.value })}
+                  onChange={(e) => setCreateCardProps({
+                    ...createCardProps,
+                    files: {
+                      ...createCardProps.files,
+                      'index.md': {
+                        file: {
+                          contents: e.target.value
+                        }
+                      }
+                    }})
+                  }
                   className='flex-1 p-2 border rounded-md'
                   required
                 />
                 <textarea
-                  id='template'
+                  id='template.js'
                   value={createCardProps.template}
-                  onChange={(e) => setCreateCardProps({ ...createCardProps, template: e.target.value })}
+                  onChange={(e) => setCreateCardProps({
+                    ...createCardProps,
+                    files: {
+                      ...createCardProps.files,
+                      'template.js': {
+                        file: {
+                          contents: e.target.value
+                        }
+                      }
+                    }})
+                  }
                   className='p-2 border rounded-md font-mono'
                 />
               </div>
             </TabsContent>
             <TabsContent value="tests" className='flex-1'>
               <textarea
-                id='tests'
+                id='tests.js'
                 value={createCardProps.tests}
-                onChange={(e) => setCreateCardProps({ ...createCardProps, tests: e.target.value })}
+                  onChange={(e) => setCreateCardProps({
+                    ...createCardProps,
+                    files: {
+                      ...createCardProps.files,
+                      'tests.js': {
+                        file: {
+                          contents: e.target.value
+                        }
+                      }
+                    }})
+                  }
                 className='w-full h-full p-2 border rounded-md'
                 required={createCardProps.type === 'task'}
               />

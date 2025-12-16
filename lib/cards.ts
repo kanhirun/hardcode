@@ -12,11 +12,14 @@ const FlashSchema = BaseSchema.extend({
   back: z.string(),
 })
 
+// TODO: Consider adding `snapshotPath` as an alternative arg to `files`
 const TaskSchema = BaseSchema.extend({
   type: z.literal('task'),
-  text: z.string(),
-  template: z.string(),
-  tests: z.string(),
+  files: z.record(z.string(), z.object({
+    file: z.object({
+      contents: z.string()
+    })
+  })),
 });
 
 const CardSchema = z.union([FlashSchema, TaskSchema]);

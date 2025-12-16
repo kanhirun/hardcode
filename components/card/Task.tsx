@@ -30,7 +30,7 @@ export const TaskComponent = ({ card }: TaskProps) => {
       font-mono text-card-foreground bg-card
     '>
       <p className='whitespace-pre-line'>
-        {card.text}
+        {card.files['index.md'] && card.files['index.md'].file && card.files['index.md'].file.contents}
       </p>
       <div className='flex gap-2'>
         <Input />
