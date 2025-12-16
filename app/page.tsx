@@ -6,7 +6,7 @@ import { useMutation } from '@tanstack/react-query';
 import { createDeck } from '@/lib/deck';
 import { useState, useEffect } from 'react';
 import type { Deck } from '@/lib/deck';
-import { CardComponent } from '@/components/Card';
+import { CardComponent } from '@/components/card/Card';
 
 export default function DeckPage() {
   const [sliceIndex, setSliceIndex] = useState(0);

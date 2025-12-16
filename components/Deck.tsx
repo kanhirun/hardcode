@@ -1,7 +1,7 @@
 'use client';
 
 import { Card } from '@/lib/cards';
-import { CardComponent } from '@/components/Card';
+import { CardComponent } from '@/components/card/Card';
 
 type DeckProps = {
   cards: Card[]
