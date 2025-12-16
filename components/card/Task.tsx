@@ -1,28 +1,49 @@
 import { Task } from '@/lib/cards';
 import { Button } from '@/components/ui/button';
-import { useContext } from 'react';
+import { useContext, useEffect, useCallback } from 'react';
+import { LoaderCircle } from 'lucide-react';
+import { useMutation } from '@tanstack/react-query';
 import { Input } from '@/components/ui/input';
 import { WebContainerContext } from '@/components/providers';
+import { CreateCardDialog } from '@/components/dialog';
 
 export type TaskProps = {
   card: Task;
 }
 
-export const TaskComponent = ({ card }: TaskProps) => {
+// TODO: Expand StepButton to include behaviors
+export const TaskComponent = ({
+  card,
+}: TaskProps) => {
+   let taskLoaded: Promise<void> | undefined;
    const webContainer = useContext(WebContainerContext);
-   const testFile = {
-     'index.md': {
-       file: {
-         contents: `
-           hello world!
-         `
-       }
+
+   const handleRun = useCallback(async () => {
+     return webContainer!.spawn('node', ['test.js'])
+       .then(proc => {
+         proc.output.pipeTo(new WritableStream({
+           write(data) { console.log(data) }
+         }))
+         return proc;
+       })
+       .then(proc => proc.exit)
+       .then(code => code === 0);
+   }, [webContainer])
+
+   const {mutate, isPending} = useMutation({
+     mutationFn: handleRun,
+     onError: (e) => {
+       console.error(e);
+     },
+     onSuccess: (v) => {
+       console.log(v);
      }
-   }
-  console.log(webContainer);
-  webContainer?.mount(testFile).then(() => {
-    webContainer.fs.readFile('index.md', 'utf8').then(console.log);
-  });
+   });
+
+   useEffect(() => {
+     taskLoaded = webContainer?.fs.writeFile('test.js', card.files['test.js'].file.contents);
+     webContainer?.fs.readFile('test.js', 'utf8').then(console.log);
+   }, [webContainer, card]);
 
   return (
     <div className='
@@ -34,9 +55,15 @@ export const TaskComponent = ({ card }: TaskProps) => {
       </p>
       <div className='flex gap-2'>
         <Input />
-        <Button className='font-sans'>
+        <Button className='font-sans' onClick={() => mutate()} disabled={isPending || webContainer === null}>
           Run
+          { isPending && <LoaderCircle className='animate-spin' /> }
         </Button>
+        <CreateCardDialog card={card}>
+          <Button  variant='outline' >
+            Edit
+          </Button>
+        </CreateCardDialog>
       </div>
     </div>
   )

@@ -1,16 +1,16 @@
 import { Button } from "@/components/ui/button";
 import { Plus } from 'lucide-react';
-import { CardCreateDialog } from "@/components/button";
+import { CreateCardDialog } from "@/components/dialog";
 
 export const Toolbar = () => {
   return (
     <div className='flex justify-end mt-20 mx-20'>
-      <CardCreateDialog>
+      <CreateCardDialog>
         <Button variant='secondary'>
           <Plus />
           Add card
         </Button>
-      </CardCreateDialog>
+      </CreateCardDialog>
     </div>
   );
 }
