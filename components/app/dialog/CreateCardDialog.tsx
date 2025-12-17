@@ -11,7 +11,8 @@ import {
 import { useMutation } from '@tanstack/react-query';
 import { useReducer } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { getFileContents, createCard, CardType, UpdateTaskCard, CreateFlashCard, CreateTaskCard, UpdateAnyCard, UpdateFlashCard } from '@/lib/cards';
+import { CardType, UpdateTaskCard, CreateFlashCard, CreateTaskCard, UpdateAnyCard, UpdateFlashCard } from '@/lib/models/cards';
+import { getFileContents, createCard } from '@/lib/actions/cards';
 
 type Props = {
   card?: UpdateAnyCard;

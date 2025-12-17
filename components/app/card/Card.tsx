@@ -1,4 +1,4 @@
-import { AnyCard, CardType } from '@/lib/cards';
+import { AnyCard, CardType } from '@/lib/models/cards';
 import { TaskComponent } from './Task';
 import { FlashComponent } from './Flash';
 

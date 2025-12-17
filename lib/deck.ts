@@ -1,5 +1,5 @@
-import { getDB } from './db';
-import type { AnyCard } from './cards';
+import { getDB } from '@/lib/db';
+import type { AnyCard } from '@/lib/models/cards';
 
 export type Deck = {
   cards: AnyCard[];

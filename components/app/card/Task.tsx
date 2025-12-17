@@ -1,12 +1,12 @@
-import { TaskCard } from '@/lib/cards';
-import { Button } from '@/components/ui/button';
 import { useContext, useEffect, useCallback } from 'react';
 import { LoaderCircle } from 'lucide-react';
 import { useMutation } from '@tanstack/react-query';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { WebContainerContext } from '@/components/app/providers';
 import { CreateCardDialog } from '@/components/app/dialog';
-import { getFileContents } from '@/lib/cards';
+import { TaskCard } from '@/lib/models/cards';
+import { getFileContents } from '@/lib/actions/cards';
 
 export type TaskProps = {
   card: TaskCard;

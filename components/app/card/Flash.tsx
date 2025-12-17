@@ -1,7 +1,7 @@
-import type { FlashCard } from '@/lib/cards'
-import { Button } from '@/components/ui/button';
 import { useState } from 'react';
-import { getFileContents } from '@/lib/cards';
+import { Button } from '@/components/ui/button';
+import type { FlashCard } from '@/lib/models/cards'
+import { getFileContents } from '@/lib/actions/cards';
 
 export type FlashProps = {
   card: FlashCard;
