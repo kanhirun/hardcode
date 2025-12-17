@@ -16,7 +16,6 @@ export default function DeckPage() {
       console.error(e);
     },
     onSuccess: (deck => {
-      console.log(deck);
       setDeck(deck);
       setSliceIndex(sliceIndex + 1);
     })

@@ -1,9 +1,9 @@
-import { Card, CardType } from '@/lib/cards';
+import { AnyCard, CardType } from '@/lib/cards';
 import { TaskComponent } from './Task';
 import { FlashComponent } from './Flash';
 
 type CardProps = {
-  card: Card;
+  card: AnyCard;
   onClick: () => void;
   children?: React.ReactNode;
 }

@@ -1,4 +1,4 @@
-import { Task } from '@/lib/cards';
+import { TaskCard } from '@/lib/cards';
 import { Button } from '@/components/ui/button';
 import { useContext, useEffect, useCallback } from 'react';
 import { LoaderCircle } from 'lucide-react';
@@ -9,7 +9,7 @@ import { CreateCardDialog } from '@/components/app/dialog';
 import { getFileContents } from '@/lib/cards';
 
 export type TaskProps = {
-  card: Task;
+  card: TaskCard;
 }
 
 // TODO: Expand StepButton to include behaviors

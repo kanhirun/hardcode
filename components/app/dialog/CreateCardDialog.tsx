@@ -11,18 +11,18 @@ import {
 import { useMutation } from '@tanstack/react-query';
 import { useReducer } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { getFileContents, createCard, CardType, UpdateTask, CreateFlash, CreateTask, UpdateCard, UpdateFlash } from '@/lib/cards';
+import { getFileContents, createCard, CardType, UpdateTaskCard, CreateFlashCard, CreateTaskCard, UpdateAnyCard, UpdateFlashCard } from '@/lib/cards';
 
 type Props = {
-  card?: UpdateCard;
+  card?: UpdateAnyCard;
   children?: React.ReactNode
 };
 
 type State = {
   isOpen: boolean;
   selected: CardType,
-  flashProps: CreateFlash | UpdateFlash,
-  taskProps: CreateTask | UpdateTask,
+  flashProps: CreateFlashCard | UpdateFlashCard,
+  taskProps: CreateTaskCard | UpdateTaskCard,
 }
 
 type Action = 
@@ -53,7 +53,7 @@ const EMPTY_FILE_CONTENTS = {
   }
 }
 
-const EMPTY_FLASH: CreateFlash = {
+const EMPTY_FLASH: CreateFlashCard = {
   type: CardType.Flash,
   files: {
     "front.md": EMPTY_FILE_CONTENTS,
@@ -61,7 +61,7 @@ const EMPTY_FLASH: CreateFlash = {
   }
 }
 
-const EMPTY_TASK: CreateTask = {
+const EMPTY_TASK: CreateTaskCard = {
   type: CardType.Task,
   files: {
     "index.md": EMPTY_FILE_CONTENTS,

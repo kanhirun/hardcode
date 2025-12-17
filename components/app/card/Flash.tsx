@@ -1,10 +1,10 @@
-import type { Flash } from '@/lib/cards'
+import type { FlashCard } from '@/lib/cards'
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { getFileContents } from '@/lib/cards';
 
 export type FlashProps = {
-  card: Flash;
+  card: FlashCard;
   onShowAnswer: () => void;
 }
 
