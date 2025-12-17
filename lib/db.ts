@@ -1,6 +1,6 @@
 // TODO: Replace me with supabase or knex
 let _db: IDBDatabase | undefined;
-const version = 1;
+const version = 2;
 
 export const getDB = (): Promise<IDBDatabase> => {
   if (typeof(_db) !== 'undefined') {
@@ -20,6 +20,11 @@ export const getDB = (): Promise<IDBDatabase> => {
 
       if (!db.objectStoreNames.contains('cards')) {
         db.createObjectStore("cards", { keyPath: 'id', autoIncrement: true });
+      }
+
+      if (!db.objectStoreNames.contains('decks')) {
+        // TODO: Rename to card decks or user cards
+        db.createObjectStore("decks", { keyPath: 'reviewAt' });
       }
     }
     

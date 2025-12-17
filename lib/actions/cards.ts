@@ -1,5 +1,6 @@
 import { getDB } from '../db';
-import { CreateAnyCard, UpdateAnyCard, UpdateAnyCardSchema, CreateAnyCardSchema } from '@/lib/models/cards';
+import { AnyCard, CreateAnyCard, UpdateAnyCard, UpdateAnyCardSchema, CreateAnyCardSchema } from '@/lib/models/cards';
+import { createDeckCard } from '@/lib/actions/decks';
 
 export const getFileContents = (filename: string, card: CreateAnyCard | UpdateAnyCard) => {
   const meta = card.files[filename];
@@ -12,17 +13,23 @@ export const createCard = async (props: CreateAnyCard | UpdateAnyCard): Promise<
 
   if (props.id) {
     const data = UpdateAnyCardSchema.parse(props);
-    const req = cardObjectStore.put(data);
+    const updateRequest = cardObjectStore.put(data);
     return new Promise((resolve, reject) => {
-      req.onerror   = (e) => reject(e);
-      req.onsuccess = (e) => resolve();
+      updateRequest.onerror   = (e) => reject(e);
+      updateRequest.onsuccess = (e) => resolve();
     });
   }
+
   const data = CreateAnyCardSchema.parse(props);
-  const req = cardObjectStore.add(data);
+  const createRequest = cardObjectStore.add(data);
 
   return new Promise((resolve, reject) => {
-    req.onerror   = (e) => reject(e);
-    req.onsuccess = (e) => resolve();
+    createRequest.onerror   = (e) => reject(e);
+    createRequest.onsuccess = (e) => {
+      const id = (e.target as IDBRequest<number>).result;
+      createDeckCard(id)
+        .then(() => resolve())
+        .catch((e) => reject(e));
+    }
   });
 }
