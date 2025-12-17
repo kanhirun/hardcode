@@ -4,8 +4,9 @@ import { useContext, useEffect, useCallback } from 'react';
 import { LoaderCircle } from 'lucide-react';
 import { useMutation } from '@tanstack/react-query';
 import { Input } from '@/components/ui/input';
-import { WebContainerContext } from '@/components/providers';
-import { CreateCardDialog } from '@/components/dialog';
+import { WebContainerContext } from '@/components/app/providers';
+import { CreateCardDialog } from '@/components/app/dialog';
+import { getFileContents } from '@/lib/cards';
 
 export type TaskProps = {
   card: Task;
@@ -51,7 +52,7 @@ export const TaskComponent = ({
       font-mono text-card-foreground bg-card
     '>
       <p className='whitespace-pre-line'>
-        {card.files['index.md'] && card.files['index.md'].file && card.files['index.md'].file.contents}
+        {getFileContents('index.md', card)}
       </p>
       <div className='flex gap-2'>
         <Input />

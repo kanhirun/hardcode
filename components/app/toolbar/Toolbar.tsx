@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Plus } from 'lucide-react';
-import { CreateCardDialog } from "@/components/dialog";
+import { CreateCardDialog } from "@/components/app/dialog";
 
 export const Toolbar = () => {
   return (

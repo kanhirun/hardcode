@@ -1,12 +1,9 @@
 'use client';
 
-import { Toolbar } from '@/components/toolbar';
-import { StepButton } from '@/components/button';
-import { useMutation } from '@tanstack/react-query';
-import { createDeck } from '@/lib/deck';
 import { useState, useEffect } from 'react';
-import type { Deck } from '@/lib/deck';
-import { CardComponent } from '@/components/card/Card';
+import { useMutation } from '@tanstack/react-query';
+import { type Deck, createDeck } from '@/lib/deck';
+import { Toolbar, StepButton, CardComponent } from '@/components/app';
 
 export default function DeckPage() {
   const [sliceIndex, setSliceIndex] = useState(0);

@@ -1,6 +1,7 @@
 import type { Flash } from '@/lib/cards'
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
+import { getFileContents } from '@/lib/cards';
 
 export type FlashProps = {
   card: Flash;
@@ -24,7 +25,7 @@ export const FlashComponent = ({
       text-card-foreground bg-card
     '>
       <p className='font-mono whitespace-pre-line'>
-        {card.front}
+        {getFileContents('front.md', card)}
       </p>
       { !isOpen ?
         <Button onClick={handleOpen}>
@@ -32,7 +33,7 @@ export const FlashComponent = ({
         </Button> :
         <div className='flex flex-col gap-2'>
           <div>Result:</div>
-          <code>{card.back}</code>
+          <code>{getFileContents('back.md', card)}</code>
         </div>
       }
     </div>
