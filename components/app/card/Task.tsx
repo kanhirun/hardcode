@@ -1,5 +1,5 @@
 import { useContext, useEffect, useCallback, useState } from 'react';
-import { LoaderCircle, CheckCircle } from 'lucide-react';
+import { LoaderCircle, CheckCircle, EditIcon } from 'lucide-react';
 import { useMutation } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -72,23 +72,27 @@ export const TaskComponent = ({
               setInputText(e.target.value);
             }}
           />
-          <div className='flex gap-4'>
+          <div className='flex gap-2'>
             <Button className='font-sans' onClick={() => mutate()} disabled={isPending || webContainer === null || isDone}>
               Run
               { isPending && <LoaderCircle className='animate-spin' /> }
               { isDone && <CheckCircle /> }
             </Button>
+            <Button  variant='outline' disabled={isDone}>
+              Skip
+            </Button>
             <CreateCardDialog card={card}>
-              <Button  variant='outline' disabled={isDone}>
-                Edit
+              <Button  variant='ghost' disabled={isDone}>
+                <EditIcon />
               </Button>
             </CreateCardDialog>
           </div>
         </div>
       ) : (
-        <div className='flex gap-2'>
+        <div className='flex w-full gap-2'>
           <Input 
             disabled={isDone}
+            className='w-1/2'
             onChange={(e) => {
               setInputText(e.target.value);
             }}
@@ -98,9 +102,12 @@ export const TaskComponent = ({
             { isPending && <LoaderCircle className='animate-spin' /> }
             { isDone && <CheckCircle /> }
           </Button>
+          <Button  variant='outline' disabled={isDone}>
+            Skip
+          </Button>
           <CreateCardDialog card={card}>
-            <Button  variant='outline' disabled={isDone}>
-              Edit
+            <Button  variant='ghost' disabled={isDone}>
+              <EditIcon />
             </Button>
           </CreateCardDialog>
         </div>

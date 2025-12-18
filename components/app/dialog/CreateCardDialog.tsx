@@ -177,9 +177,6 @@ export const CreateCardDialog = ({
         { children }
       </DialogTrigger>
       <DialogContent style={{ maxWidth: 'none', width: '800px' }}>
-        <DialogTitle>
-          Create a card
-        </DialogTitle>
         <Tabs defaultValue={state.selected.toString()}>
           <TabsList>
             <TabsTrigger value={CardType.Flash.toString()} onClick={() => dispatch({ type: 'SELECT_CARD_TYPE', payload: { cardType: CardType.Flash }})}>
