@@ -176,7 +176,7 @@ export const CreateCardDialog = ({
       <DialogTrigger asChild>
         { children }
       </DialogTrigger>
-      <DialogContent style={{ maxWidth: 'none', width: '800px' }}>
+      <DialogContent style={{ maxWidth: 'none', width: '1000px' }}>
         <Tabs defaultValue={state.selected.toString()}>
           <TabsList>
             <TabsTrigger value={CardType.Flash.toString()} onClick={() => dispatch({ type: 'SELECT_CARD_TYPE', payload: { cardType: CardType.Flash }})}>
@@ -202,7 +202,7 @@ export const CreateCardDialog = ({
                   console.error('Failed to create');
               }
             }}
-            className='flex flex-col h-100 space-y-4'
+            className='flex flex-col h-150 space-y-4'
           >
             <TabsContent value={CardType.Flash.toString()}>
               <div className='flex gap-2 h-full font-mono'>
@@ -270,7 +270,7 @@ export const CreateCardDialog = ({
                         contents: e.target.value
                       }
                     })}
-                    className='p-2 border rounded-md font-mono h-1/3'
+                    className='p-2 border rounded-md font-mono h-30'
                   />
                   <textarea
                     id='test.js'
