@@ -8,20 +8,22 @@ import { CreateCardDialog } from '@/components/app/dialog';
 import { TaskCard } from '@/lib/models/cards';
 import { getFileContents } from '@/lib/actions/cards';
 
-type ComponentProps = {
+type Props = {
   card: TaskCard;
+  onRunSuccess: () => void;
 }
 
 // TODO: Expand StepButton to include behaviors
 export const TaskComponent = ({
   card,
-}: ComponentProps) => {
+  onRunSuccess: handleRunSuccess,
+}: Props) => {
    let taskLoaded: Promise<void> | undefined;
    const webContainer = useContext(WebContainerContext);
    const [inputText, setInputText] = useState('');
 
    const handleRun = useCallback(async () => {
-     return webContainer!.spawn('node', ['test.js', inputText])
+     return webContainer!.spawn('node', ['test.js', `(${inputText})`])
        .then(proc => {
          proc.output.pipeTo(new WritableStream({
            write(data) { console.log(data) }
@@ -30,12 +32,20 @@ export const TaskComponent = ({
        })
        .then(proc => proc.exit)
        .then(code => code === 0);
-   }, [webContainer, inputText])
+   }, [inputText, webContainer])
 
    const {mutate, isPending} = useMutation({
      mutationFn: handleRun,
      onError: (e) => {
        console.error(e);
+     },
+     onSuccess: (isPassed) => {
+       if (!isPassed) {
+         return;
+       }
+
+       // TODO: Disable button and fields and call handler
+       handleRunSuccess()
      }
    });
 

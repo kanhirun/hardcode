@@ -7,9 +7,8 @@ import { Card } from '@/lib/models/cards';
 import { fetchNextIndexCard } from '@/lib/actions/indexCards';
 
 export default function DeckPage() {
-  const [sliceIndex, setSliceIndex] = useState(0);
   const [deck, setDeck] = useState<Card[]>([]);
-  const fetchNextIndexCardMutation = useMutation({
+  const { mutate } = useMutation({
     mutationFn: fetchNextIndexCard,
     onError: (e) => {
       console.error(e);
@@ -19,19 +18,15 @@ export default function DeckPage() {
         console.warn('No cards left');
         return;
       }
-      setDeck([ ...deck, card ])
-      setSliceIndex(sliceIndex + 1);
-    })
-  });
 
-  useEffect(() => {
-    if (sliceIndex > 0) {
+      setDeck([ ...deck, card ]);
+
       window.scrollTo({ 
         top: document.documentElement.scrollHeight, 
         behavior: 'smooth' 
       });
-    }
-  }, [sliceIndex]);
+    })
+  });
 
   return (
     <div className="min-h-screen justify-center">
@@ -43,8 +38,8 @@ export default function DeckPage() {
               JavaScript is a high-level programming language for creating dynamic and interactive web pages. It works with HTML and CSS to enhance user interfaces with features like animations and asynchronous data fetching. JavaScript's frameworks and libraries, such as React and Angular, expand its capabilities in modern web development.
             </p>
             <StepButton 
-              hidden={sliceIndex > 0}
-              onClick={() => fetchNextIndexCardMutation.mutate()}
+              hidden={deck.length > 1}
+              onClick={() => mutate()}
               className="mt-10"
             >
               Start
@@ -52,12 +47,11 @@ export default function DeckPage() {
           </section>
           <section className='flex flex-col gap-10 mb-10'>
             { deck
-                .slice(0, sliceIndex)
                 .map((card, idx) => (
                   <CardComponent 
                     key={idx}
                     card={card}
-                    onClick={() => setSliceIndex(sliceIndex + 1)}
+                    onRunSuccess={() => mutate()}
                   />
             ))}
           </section>
