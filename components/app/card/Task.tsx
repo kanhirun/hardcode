@@ -1,5 +1,5 @@
 import { useContext, useEffect, useCallback, useState } from 'react';
-import { LoaderCircle } from 'lucide-react';
+import { LoaderCircle, CheckCircle } from 'lucide-react';
 import { useMutation } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,6 +21,7 @@ export const TaskComponent = ({
    let taskLoaded: Promise<void> | undefined;
    const webContainer = useContext(WebContainerContext);
    const [inputText, setInputText] = useState('');
+   const [isDone, setIsDone] = useState(false);
 
    const handleRun = useCallback(async () => {
      return webContainer!.spawn('node', ['test.js', `(${inputText})`])
@@ -44,7 +45,7 @@ export const TaskComponent = ({
          return;
        }
 
-       // TODO: Disable button and fields and call handler
+       setIsDone(true);
        handleRunSuccess()
      }
    });
@@ -62,15 +63,19 @@ export const TaskComponent = ({
         {getFileContents('index.md', card)}
       </p>
       <div className='flex gap-2'>
-        <Input onChange={(e) => {
-          setInputText(e.target.value);
-        }}/>
-        <Button className='font-sans' onClick={() => mutate()} disabled={isPending || webContainer === null}>
+        <Input 
+          disabled={isDone}
+          onChange={(e) => {
+            setInputText(e.target.value);
+          }}
+        />
+        <Button className='font-sans' onClick={() => mutate()} disabled={isPending || webContainer === null || isDone}>
           Run
           { isPending && <LoaderCircle className='animate-spin' /> }
+          { isDone && <CheckCircle /> }
         </Button>
         <CreateCardDialog card={card}>
-          <Button  variant='outline' >
+          <Button  variant='outline' disabled={isDone}>
             Edit
           </Button>
         </CreateCardDialog>
