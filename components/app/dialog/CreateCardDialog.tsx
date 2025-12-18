@@ -73,7 +73,7 @@ const EMPTY_TASK: CreateTaskCardProps = {
 const { test } = require('uvu');
 const input = eval(process.argv[2]);
 
-it('returns true', () => {
+test('returns true', () => {
   assert.equal(input, true);
 });
 

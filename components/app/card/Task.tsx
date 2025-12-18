@@ -20,7 +20,7 @@ export const TaskComponent = ({
 }: Props) => {
    let taskLoaded: Promise<void> | undefined;
    const webContainer = useContext(WebContainerContext);
-   const [inputText, setInputText] = useState('');
+   const [inputText, setInputText] = useState(card.files['template.js'].file.contents);
    const [isDone, setIsDone] = useState(false);
 
    const handleRun = useCallback(async () => {
@@ -62,24 +62,49 @@ export const TaskComponent = ({
       <p className='whitespace-pre-line'>
         {getFileContents('index.md', card)}
       </p>
-      <div className='flex gap-2'>
-        <Input 
-          disabled={isDone}
-          onChange={(e) => {
-            setInputText(e.target.value);
-          }}
-        />
-        <Button className='font-sans' onClick={() => mutate()} disabled={isPending || webContainer === null || isDone}>
-          Run
-          { isPending && <LoaderCircle className='animate-spin' /> }
-          { isDone && <CheckCircle /> }
-        </Button>
-        <CreateCardDialog card={card}>
-          <Button  variant='outline' disabled={isDone}>
-            Edit
+      { card.files['template.js'].file.contents.length > 0 ? (
+        <div className='flex flex-col gap-4 w-full'>
+          <textarea
+            disabled={isDone}
+            className='w-full h-100 overflow-auto resize-none p-4 bg-background rounded'
+            value={inputText}
+            onChange={(e) => {
+              setInputText(e.target.value);
+            }}
+          />
+          <div className='flex gap-4'>
+            <Button className='font-sans' onClick={() => mutate()} disabled={isPending || webContainer === null || isDone}>
+              Run
+              { isPending && <LoaderCircle className='animate-spin' /> }
+              { isDone && <CheckCircle /> }
+            </Button>
+            <CreateCardDialog card={card}>
+              <Button  variant='outline' disabled={isDone}>
+                Edit
+              </Button>
+            </CreateCardDialog>
+          </div>
+        </div>
+      ) : (
+        <div className='flex gap-2'>
+          <Input 
+            disabled={isDone}
+            onChange={(e) => {
+              setInputText(e.target.value);
+            }}
+          />
+          <Button className='font-sans' onClick={() => mutate()} disabled={isPending || webContainer === null || isDone}>
+            Run
+            { isPending && <LoaderCircle className='animate-spin' /> }
+            { isDone && <CheckCircle /> }
           </Button>
-        </CreateCardDialog>
-      </div>
+          <CreateCardDialog card={card}>
+            <Button  variant='outline' disabled={isDone}>
+              Edit
+            </Button>
+          </CreateCardDialog>
+        </div>
+      )}
     </div>
   )
 }

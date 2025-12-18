@@ -19,14 +19,18 @@ export default function DeckPage() {
         return;
       }
 
+
       setDeck([ ...deck, card ]);
 
-      window.scrollTo({ 
-        top: document.documentElement.scrollHeight, 
-        behavior: 'smooth' 
-      });
     })
   });
+
+  useEffect(() => {
+    window.scrollTo({ 
+      top: document.documentElement.scrollHeight, 
+      behavior: 'smooth' 
+    });
+  }, [deck]);
 
   return (
     <div className="min-h-screen justify-center">
