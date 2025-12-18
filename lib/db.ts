@@ -24,7 +24,7 @@ export const getDB = (): Promise<IDBDatabase> => {
 
       if (!db.objectStoreNames.contains('decks')) {
         // TODO: Rename to card decks or user cards
-        db.createObjectStore("decks", { keyPath: 'reviewAt' });
+        db.createObjectStore("indexCards", { keyPath: 'reviewAt' });
       }
     }
     

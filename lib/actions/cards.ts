@@ -1,6 +1,6 @@
 import { getDB } from '../db';
 import { AnyCard, CreateAnyCard, UpdateAnyCard, UpdateAnyCardSchema, CreateAnyCardSchema } from '@/lib/models/cards';
-import { createDeckCard } from '@/lib/actions/decks';
+import { createIndexCard } from '@/lib/actions/decks';
 
 export const getFileContents = (filename: string, card: CreateAnyCard | UpdateAnyCard) => {
   const meta = card.files[filename];
@@ -27,7 +27,7 @@ export const createCard = async (props: CreateAnyCard | UpdateAnyCard): Promise<
     createRequest.onerror   = (e) => reject(e);
     createRequest.onsuccess = (e) => {
       const id = (e.target as IDBRequest<number>).result;
-      createDeckCard(id)
+      createIndexCard(id)
         .then(() => resolve())
         .catch((e) => reject(e));
     }

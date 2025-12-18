@@ -2,10 +2,10 @@ import { getDB } from "@/lib/db";
 import { DeckCard } from '@/lib/models/decks';
 import { AnyCard } from '@/lib/models/cards';
 
-export const createDeckCard = async (cardId: AnyCard['id']): Promise<void> => {
+export const createIndexCard = async (cardId: AnyCard['id']): Promise<void> => {
   // TODO: Validate that card exists before creating deck card?
   const db = await getDB();
-  const deckObjectStore = db.transaction('decks', 'readwrite').objectStore('decks');
+  const deckObjectStore = db.transaction('indexCards', 'readwrite').objectStore('decks');
 
   const created: DeckCard = {
     cardId,
