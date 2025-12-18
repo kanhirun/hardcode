@@ -1,13 +1,13 @@
 import { getDB } from '../db';
-import { AnyCard, CreateAnyCard, UpdateAnyCard, UpdateAnyCardSchema, CreateAnyCardSchema } from '@/lib/models/cards';
-import { createIndexCard } from '@/lib/actions/decks';
+import { AnyCardProps, CreateAnyCardProps, UpdateAnyCardProps, UpdateAnyCardSchema, CreateAnyCardSchema } from '@/lib/models/cards';
+import { createIndexCard } from '@/lib/actions/indexCards';
 
-export const getFileContents = (filename: string, card: CreateAnyCard | UpdateAnyCard) => {
+export const getFileContents = (filename: string, card: CreateAnyCardProps | UpdateAnyCardProps) => {
   const meta = card.files[filename];
   return meta && meta.file.contents;
 }
 
-export const createCard = async (props: CreateAnyCard | UpdateAnyCard): Promise<void>  => {
+export const createCard = async (props: CreateAnyCardProps | UpdateAnyCardProps): Promise<void>  => {
   const db = await getDB();
   const cardObjectStore = db.transaction('cards', 'readwrite').objectStore('cards');
 

@@ -2,21 +2,25 @@
 
 import { useState, useEffect } from 'react';
 import { useMutation } from '@tanstack/react-query';
-import { type Deck, createDeck } from '@/lib/deck';
 import { Toolbar, StepButton, CardComponent } from '@/components/app';
+import { Card } from '@/lib/models/cards';
+import { fetchNextIndexCard } from '@/lib/actions/indexCards';
 
 export default function DeckPage() {
   const [sliceIndex, setSliceIndex] = useState(0);
-  const [deck, setDeck] = useState<Deck>({ cards: [] });
-  const {
-    mutate: createDeckAction,
-  } = useMutation({
-    mutationFn: createDeck,
+  const [deck, setDeck] = useState<Card[]>([]);
+  const fetchNextIndexCardMutation = useMutation({
+    mutationFn: fetchNextIndexCard,
     onError: (e) => {
       console.error(e);
     },
-    onSuccess: (deck => {
-      setDeck(deck);
+    onSuccess: (card => {
+      if (!card) {
+        console.warn('No cards left');
+        return;
+      }
+      console.log(card);
+      setDeck([ ...deck, card ])
       setSliceIndex(sliceIndex + 1);
     })
   });
@@ -41,14 +45,14 @@ export default function DeckPage() {
             </p>
             <StepButton 
               hidden={sliceIndex > 0}
-              onClick={() => createDeckAction()}
+              onClick={() => fetchNextIndexCardMutation.mutate()}
               className="mt-10"
             >
               Start
             </StepButton>
           </section>
           <section className='flex flex-col gap-10 mb-10'>
-            { deck.cards
+            { deck
                 .slice(0, sliceIndex)
                 .map((card, idx) => (
                   <CardComponent 

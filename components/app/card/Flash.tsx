@@ -1,17 +1,17 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import type { FlashCard } from '@/lib/models/cards'
+import type { FlashCardProps } from '@/lib/models/cards'
 import { getFileContents } from '@/lib/actions/cards';
 
-export type FlashProps = {
-  card: FlashCard;
+type ComponentProps = {
+  card: FlashCardProps;
   onShowAnswer: () => void;
 }
 
 export const FlashComponent = ({
   card,
   onShowAnswer: handleShowAnswer,
-}: FlashProps) => {
+}: ComponentProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleOpen = () => {

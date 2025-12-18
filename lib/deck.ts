@@ -1,8 +1,8 @@
 import { getDB } from '@/lib/db';
-import type { AnyCard } from '@/lib/models/cards';
+import type { AnyCardProps } from '@/lib/models/cards';
 
 export type Deck = {
-  cards: AnyCard[];
+  cards: AnyCardProps[];
 }
 
 export const createDeck = async (): Promise<Deck> => {

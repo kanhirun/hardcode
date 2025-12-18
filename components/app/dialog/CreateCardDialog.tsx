@@ -11,19 +11,19 @@ import {
 import { useMutation } from '@tanstack/react-query';
 import { useReducer } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { CardType, UpdateTaskCard, CreateFlashCard, CreateTaskCard, UpdateAnyCard, UpdateFlashCard } from '@/lib/models/cards';
+import { CardType, UpdateTaskCardProps, CreateFlashCardProps, CreateTaskCardProps, UpdateAnyCardProps, UpdateFlashCardProps } from '@/lib/models/cards';
 import { getFileContents, createCard } from '@/lib/actions/cards';
 
 type Props = {
-  card?: UpdateAnyCard;
+  card?: UpdateAnyCardProps;
   children?: React.ReactNode
 };
 
 type State = {
   isOpen: boolean;
   selected: CardType,
-  flashProps: CreateFlashCard | UpdateFlashCard,
-  taskProps: CreateTaskCard | UpdateTaskCard,
+  flashProps: CreateFlashCardProps | UpdateFlashCardProps,
+  taskProps: CreateTaskCardProps | UpdateTaskCardProps,
 }
 
 type Action = 
@@ -54,7 +54,7 @@ const EMPTY_FILE_CONTENTS = {
   }
 }
 
-const EMPTY_FLASH: CreateFlashCard = {
+const EMPTY_FLASH: CreateFlashCardProps = {
   type: CardType.Flash,
   files: {
     "front.md": EMPTY_FILE_CONTENTS,
@@ -62,7 +62,7 @@ const EMPTY_FLASH: CreateFlashCard = {
   }
 }
 
-const EMPTY_TASK: CreateTaskCard = {
+const EMPTY_TASK: CreateTaskCardProps = {
   type: CardType.Task,
   files: {
     "index.md": EMPTY_FILE_CONTENTS,

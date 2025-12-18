@@ -5,17 +5,17 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { WebContainerContext } from '@/components/app/providers';
 import { CreateCardDialog } from '@/components/app/dialog';
-import { TaskCard } from '@/lib/models/cards';
+import { TaskCardProps } from '@/lib/models/cards';
 import { getFileContents } from '@/lib/actions/cards';
 
-export type TaskProps = {
-  card: TaskCard;
+type ComponentProps = {
+  card: TaskCardProps;
 }
 
 // TODO: Expand StepButton to include behaviors
 export const TaskComponent = ({
   card,
-}: TaskProps) => {
+}: ComponentProps) => {
    let taskLoaded: Promise<void> | undefined;
    const webContainer = useContext(WebContainerContext);
 

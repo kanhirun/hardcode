@@ -5,7 +5,7 @@ export enum CardType {
   Task,
 }
 export const CardTypeEnum = z.enum(CardType);
-export const CardSchema = z.object({
+export const BaseCardSchema = z.object({
   id: z.number(),
   type: CardTypeEnum,
 });
@@ -16,7 +16,7 @@ const FileContentsSchema = z.object({
   })
 });
 
-const FlashCardSchema = CardSchema.extend({
+const FlashCardSchema = BaseCardSchema.extend({
   type: z.literal(CardType.Flash),
   files: z.object({
     "front.md": FileContentsSchema,
@@ -25,7 +25,7 @@ const FlashCardSchema = CardSchema.extend({
 })
 
 // TODO: Consider adding `snapshotPath` as an alternative arg to `files`
-const TaskCardSchema = CardSchema.extend({
+const TaskCardSchema = BaseCardSchema.extend({
   type: z.literal(CardType.Task),
   files: z.object({
     "index.md": FileContentsSchema,
@@ -34,12 +34,12 @@ const TaskCardSchema = CardSchema.extend({
   }).catchall(FileContentsSchema)
 });
 
-const AnyCardSchema = z.union([FlashCardSchema, TaskCardSchema]);
+const CardSchema = z.union([FlashCardSchema, TaskCardSchema]);
 
 export type File = z.infer<typeof FileContentsSchema>;
 export type FlashCard = z.infer<typeof FlashCardSchema>;
 export type TaskCard = z.infer<typeof TaskCardSchema>;
-export type AnyCard = z.infer<typeof AnyCardSchema>;
+export type Card = z.infer<typeof CardSchema>;
 
 export const CreateFlashCardSchema = FlashCardSchema.partial({ id: true });
 export const CreateTaskCardSchema = TaskCardSchema.partial({ id: true });
@@ -60,9 +60,9 @@ export const UpdateTaskCardSchema = TaskCardSchema.extend({
 });
 export const UpdateAnyCardSchema = z.union([UpdateFlashCardSchema, UpdateTaskCardSchema]);
 
-export type CreateFlashCard = z.infer<typeof CreateFlashCardSchema>;
-export type CreateTaskCard = z.infer<typeof CreateTaskCardSchema>;
-export type CreateAnyCard = z.infer<typeof CreateAnyCardSchema>;
-export type UpdateAnyCard = z.infer<typeof UpdateAnyCardSchema>;
-export type UpdateFlashCard = z.infer<typeof UpdateFlashCardSchema>;
-export type UpdateTaskCard = z.infer<typeof UpdateTaskCardSchema>;
+export type CreateFlashCardProps = z.infer<typeof CreateFlashCardSchema>;
+export type CreateTaskCardProps = z.infer<typeof CreateTaskCardSchema>;
+export type CreateAnyCardProps = z.infer<typeof CreateAnyCardSchema>;
+export type UpdateAnyCardProps = z.infer<typeof UpdateAnyCardSchema>;
+export type UpdateFlashCardProps = z.infer<typeof UpdateFlashCardSchema>;
+export type UpdateTaskCardProps = z.infer<typeof UpdateTaskCardSchema>;

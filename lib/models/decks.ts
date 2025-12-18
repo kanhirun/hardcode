@@ -1,9 +1,9 @@
 import * as z from 'zod';
-import { CardSchema } from '@/lib/models/cards';
+import { BaseCardSchema } from '@/lib/models/cards';
 
-export const DeckCardSchema = z.object({
-  cardId: CardSchema.shape.id,
+export const IndexCardSchema = z.object({
+  cardId: BaseCardSchema.shape.id,
   reviewAt: z.date()
 });
 
-export type DeckCard = z.infer<typeof DeckCardSchema>;
+export type IndexCard = z.infer<typeof IndexCardSchema>;

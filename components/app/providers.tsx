@@ -16,12 +16,12 @@ export const WebContainerProvider = ({
       })
       .then(instance => {
         return instance.spawn('npm', ['install', '--save-dev', 'uvu'])
-          .then(proc => {
-            proc.output.pipeTo(new WritableStream({
-              write(data) { console.log(data) }
-            }));
-            return proc.exit;
-          })
+          // .then(proc => {
+          //   proc.output.pipeTo(new WritableStream({
+          //     write(data) { console.log(data) }
+          //   }));
+          //   return proc.exit;
+          // })
           .then(() => instance)
       })
       .then(instance => {
