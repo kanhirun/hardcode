@@ -1,5 +1,5 @@
 import { getDB } from '../db';
-import { AnyCardProps, CreateAnyCardProps, UpdateAnyCardProps, UpdateAnyCardSchema, CreateAnyCardSchema } from '@/lib/models/cards';
+import { CreateAnyCardProps, UpdateAnyCardProps, UpdateAnyCardSchema, CreateAnyCardSchema } from '@/lib/models/cards';
 import { createIndexCard } from '@/lib/actions/indexCards';
 
 export const getFileContents = (filename: string, card: CreateAnyCardProps | UpdateAnyCardProps) => {

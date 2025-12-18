@@ -60,7 +60,6 @@ export const fetchNextIndexCard = async (): Promise<Card | null> => {
 
       // Get card details
       updateRequest.onsuccess = () => {
-        console.log('updated reviewAt');
         const cardObjectStore = db
           .transaction('cards', 'readonly')
           .objectStore('cards');

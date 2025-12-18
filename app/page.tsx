@@ -19,7 +19,6 @@ export default function DeckPage() {
         console.warn('No cards left');
         return;
       }
-      console.log(card);
       setDeck([ ...deck, card ])
       setSliceIndex(sliceIndex + 1);
     })
