@@ -66,7 +66,20 @@ const EMPTY_TASK: CreateTaskCardProps = {
   type: CardType.Task,
   files: {
     "index.md": EMPTY_FILE_CONTENTS,
-    "test.js": EMPTY_FILE_CONTENTS,
+    "test.js": {
+      file: {
+        contents:
+`const assert = require('assert');
+const { test } = require('uvu');
+const input = eval(process.argv[2]);
+
+it('returns true', () => {
+  assert.equal(input, true);
+});
+
+test.run();`
+      }
+    },
     "template.js": EMPTY_FILE_CONTENTS
   }
 }
@@ -177,10 +190,6 @@ export const CreateCardDialog = ({
               <SplitSquareVertical />
               Task Card
             </TabsTrigger>
-            <TabsTrigger value="test.js">
-              <Code />
-              Tests
-            </TabsTrigger>
           </TabsList>
           <form 
             onSubmit={e => {
@@ -211,7 +220,7 @@ export const CreateCardDialog = ({
                       contents: e.target.value
                     }
                   })}
-                  className='flex-1 p-2 border rounded-md'
+                  className='flex-1 p-2 border rounded-md resize-none'
                   required
                 />
                 <textarea
@@ -227,59 +236,64 @@ export const CreateCardDialog = ({
                       }
                     });
                   }}
-                  className='flex-1 p-2 border rounded-md'
+                  className='flex-1 p-2 border rounded-md resize-none'
                   required
                 />
               </div>
             </TabsContent>
             <TabsContent value={CardType.Task.toString()}>
-              <div className='flex flex-col h-full gap-2'>
-                <textarea
-                  id='index.md'
-                  value={getFileContents('index.md', state.taskProps)}
-                  onChange={e => dispatch({
-                    type: 'UPDATE_FILE',
-                    payload: {
-                      cardType: CardType.Task,
-                      filename: 'index.md',
-                      contents: e.target.value
+              <div className='flex h-full gap-2'>
+                <div className='flex w-full'>
+                  <textarea
+                    id='index.md'
+                    value={getFileContents('index.md', state.taskProps)}
+                    placeholder='Instructions...'
+                    onChange={e => dispatch({
+                      type: 'UPDATE_FILE',
+                      payload: {
+                        cardType: CardType.Task,
+                        filename: 'index.md',
+                        contents: e.target.value
+                      }
+                    })}
+                    className='flex-1 p-2 border rounded-md font-mono resize-none overflow-auto'
+                    required
+                  />
+                </div>
+                <div className='flex flex-col gap-2 w-full'>
+                  <textarea
+                    id='template.js'
+                    placeholder='Template, optional...'
+                    value={getFileContents('template.js', state.taskProps)}
+                    onChange={e => dispatch({
+                      type: 'UPDATE_FILE',
+                      payload: {
+                        cardType: CardType.Task,
+                        filename: 'template.js',
+                        contents: e.target.value
+                      }
+                    })}
+                    className='p-2 border rounded-md font-mono h-1/3'
+                  />
+                  <textarea
+                    id='test.js'
+                    value={
+                      getFileContents('test.js', state.taskProps)
                     }
-                  })}
-                  className='flex-1 p-2 border rounded-md'
-                  required
-                />
-                <textarea
-                  id='template.js'
-                  value={getFileContents('template.js', state.taskProps)}
-                  onChange={e => dispatch({
-                    type: 'UPDATE_FILE',
-                    payload: {
-                      cardType: CardType.Task,
-                      filename: 'template.js',
-                      contents: e.target.value
-                    }
-                  })}
-                  className='p-2 border rounded-md font-mono'
-                />
+                    placeholder='Tests...'
+                    onChange={e => dispatch({
+                      type: 'UPDATE_FILE',
+                      payload: {
+                        cardType: CardType.Task,
+                        filename: 'test.js',
+                        contents: e.target.value
+                      }
+                    })}
+                    className='w-full h-full p-2 border rounded-md font-mono resize-none overflow-auto'
+                    required={state.selected === CardType.Task}
+                  />
+                </div>
               </div>
-            </TabsContent>
-            <TabsContent value="test.js" className='flex-1'>
-              <textarea
-                id='test.js'
-                value={
-                  getFileContents('test.js', state.taskProps)
-                }
-                onChange={e => dispatch({
-                  type: 'UPDATE_FILE',
-                  payload: {
-                    cardType: CardType.Task,
-                    filename: 'test.js',
-                    contents: e.target.value
-                  }
-                })}
-                className='w-full h-full p-2 border rounded-md font-mono'
-                required={state.selected === CardType.Task}
-              />
             </TabsContent>
             <div className='flex justify-end gap-2'>
               <Button type='submit' disabled={isPending}>
