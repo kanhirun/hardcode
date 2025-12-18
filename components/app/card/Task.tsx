@@ -13,7 +13,7 @@ type Props = {
   onRunSuccess: () => void;
 }
 
-// TODO: Expand StepButton to include behaviors
+
 export const TaskComponent = ({
   card,
   onRunSuccess: handleRunSuccess,
@@ -23,7 +23,7 @@ export const TaskComponent = ({
    const [inputText, setInputText] = useState(card.files['template.js'].file.contents);
    const [isDone, setIsDone] = useState(false);
 
-   const handleRun = useCallback(async () => {
+   const handleRun = useCallback(async (isSkipping: boolean) => {
      return webContainer!.spawn('node', ['test.js', `(${inputText})`])
        .then(proc => {
          proc.output.pipeTo(new WritableStream({
@@ -40,19 +40,37 @@ export const TaskComponent = ({
      onError: (e) => {
        console.error(e);
      },
-     onSuccess: (isPassed) => {
-       if (!isPassed) {
-         return;
+     onSuccess: (isPassed, isSkipping) => {
+       if (isSkipping || isPassed) {
+         setIsDone(true);
+         handleRunSuccess();
        }
-
-       setIsDone(true);
-       handleRunSuccess()
      }
    });
 
    useEffect(() => {
      taskLoaded = webContainer?.fs.writeFile('test.js', card.files['test.js'].file.contents);
    }, [webContainer, card]);
+
+   const ButtonGroup = () => {
+     return (
+       <>
+        <Button className='font-sans' onClick={() => mutate(false)} disabled={isPending || webContainer === null || isDone}>
+          Run
+          { isPending && <LoaderCircle className='animate-spin' /> }
+          { isDone && <CheckCircle /> }
+        </Button>
+        <Button  variant='outline' disabled={isDone} onClick={() => mutate(true)}>
+          Skip
+        </Button>
+        <CreateCardDialog card={card}>
+          <Button  variant='ghost' disabled={isDone}>
+            <EditIcon />
+          </Button>
+        </CreateCardDialog>
+      </>
+     )
+   };
 
   return (
     <div className='
@@ -73,19 +91,7 @@ export const TaskComponent = ({
             }}
           />
           <div className='flex gap-2'>
-            <Button className='font-sans' onClick={() => mutate()} disabled={isPending || webContainer === null || isDone}>
-              Run
-              { isPending && <LoaderCircle className='animate-spin' /> }
-              { isDone && <CheckCircle /> }
-            </Button>
-            <Button  variant='outline' disabled={isDone}>
-              Skip
-            </Button>
-            <CreateCardDialog card={card}>
-              <Button  variant='ghost' disabled={isDone}>
-                <EditIcon />
-              </Button>
-            </CreateCardDialog>
+            <ButtonGroup />
           </div>
         </div>
       ) : (
@@ -97,19 +103,7 @@ export const TaskComponent = ({
               setInputText(e.target.value);
             }}
           />
-          <Button className='font-sans' onClick={() => mutate()} disabled={isPending || webContainer === null || isDone}>
-            Run
-            { isPending && <LoaderCircle className='animate-spin' /> }
-            { isDone && <CheckCircle /> }
-          </Button>
-          <Button  variant='outline' disabled={isDone}>
-            Skip
-          </Button>
-          <CreateCardDialog card={card}>
-            <Button  variant='ghost' disabled={isDone}>
-              <EditIcon />
-            </Button>
-          </CreateCardDialog>
+          <ButtonGroup />
         </div>
       )}
     </div>
