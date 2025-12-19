@@ -1,5 +1,5 @@
 import { getTemplateObjectStore } from '../db';
-import { CreateAnyTemplateType, UpdateAnyTemplateType, UpdateTemplateSchema, CreateAnyCardSchema } from '@/lib/models/templates';
+import { CreateAnyTemplateType, UpdateAnyTemplateType, UpdateTemplateSchema, CreateAnyTemplateSchema } from '@/lib/models/templates';
 import { createCard } from '@/lib/actions/cards';
 
 export const getFileContents = (filename: string, card: CreateAnyTemplateType | UpdateAnyTemplateType) => {
@@ -19,7 +19,7 @@ export const createTemplate = async (props: CreateAnyTemplateType | UpdateAnyTem
     });
   }
 
-  const data = CreateAnyCardSchema.parse(props);
+  const data = CreateAnyTemplateSchema.parse(props);
   const createRequest = templateStore.add(data);
 
   return new Promise((resolve, reject) => {

@@ -8,9 +8,8 @@ import { fetchNextCard as mutationFn } from '@/lib/actions/cards';
 
 export default function DeckPage() {
   const queryClient = useQueryClient();
-
   const [deck, setDeck] = useState<TemplateType[]>([]);
-  const { mutate: fetchNextIndexCard } = useMutation({
+  const fetchNextCard = useMutation({
     mutationFn,
     onError: (e) => {
       console.error(e);
@@ -44,7 +43,7 @@ export default function DeckPage() {
             </p>
             <StepButton 
               hidden={deck.length > 0}
-              onClick={() => fetchNextIndexCard()}
+              onClick={() => fetchNextCard.mutate()}
               className="mt-10"
             >
               Start
@@ -56,7 +55,7 @@ export default function DeckPage() {
                   <CardComponent 
                     key={idx}
                     card={card}
-                    onRunSuccess={() => fetchNextIndexCard()}
+                    onRunSuccess={() => fetchNextCard.mutate()}
                   />
             ))}
           </section>

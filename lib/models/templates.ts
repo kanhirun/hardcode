@@ -44,7 +44,7 @@ export type TemplateType = z.infer<typeof TemplateSchema>;
 
 export const CreateFlashTemplateSchema = FlashTemplateSchema.partial({ id: true });
 export const CreateIssueTemplateSchema = IssueTemplateSchema.partial({ id: true });
-export const CreateAnyCardSchema = z.union([CreateFlashTemplateSchema, CreateIssueTemplateSchema]);
+export const CreateAnyTemplateSchema = z.union([CreateFlashTemplateSchema, CreateIssueTemplateSchema]);
 
 export const UpdateFlashTemplateSchema = FlashTemplateSchema.extend({
   files: FlashTemplateSchema.shape.files.partial({
@@ -63,7 +63,7 @@ export const UpdateTemplateSchema = z.union([UpdateFlashTemplateSchema, UpdateIs
 
 export type CreateFlashTemplateType = z.infer<typeof CreateFlashTemplateSchema>;
 export type CreateTaskTemplateType = z.infer<typeof CreateIssueTemplateSchema>;
-export type CreateAnyTemplateType = z.infer<typeof CreateAnyCardSchema>;
+export type CreateAnyTemplateType = z.infer<typeof CreateAnyTemplateSchema>;
 export type UpdateAnyTemplateType = z.infer<typeof UpdateTemplateSchema>;
 export type UpdateFlashTemplateType = z.infer<typeof UpdateFlashTemplateSchema>;
 export type UpdateIssueTemplateType = z.infer<typeof UpdateIssueTemplateSchema>;
