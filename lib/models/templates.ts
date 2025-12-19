@@ -1,5 +1,11 @@
 import * as z from 'zod';
 
+const FileContentsSchema = z.object({
+  file: z.object({
+    contents: z.string()
+  })
+});
+
 export enum TemplateEnum {
   Flash,
   Task,
@@ -8,15 +14,10 @@ export const TemplateEnumSchema = z.enum(TemplateEnum);
 export const TemplateBaseSchema = z.object({
   id: z.number(),
   type: TemplateEnumSchema,
+  files: z.record(z.string(), FileContentsSchema)
 });
 
-const FileContentsSchema = z.object({
-  file: z.object({
-    contents: z.string()
-  })
-});
-
-const FlashTemplateSchema = TemplateBaseSchema.extend({
+export const FlashTemplateSchema = TemplateBaseSchema.extend({
   type: z.literal(TemplateEnum.Flash),
   files: z.object({
     "front.md": FileContentsSchema,
@@ -25,7 +26,7 @@ const FlashTemplateSchema = TemplateBaseSchema.extend({
 })
 
 // TODO: Consider adding `snapshotPath` as an alternative arg to `files`
-const IssueTemplateSchema = TemplateBaseSchema.extend({
+export const IssueTemplateSchema = TemplateBaseSchema.extend({
   type: z.literal(TemplateEnum.Task),
   files: z.object({
     "index.md": FileContentsSchema,
@@ -34,7 +35,7 @@ const IssueTemplateSchema = TemplateBaseSchema.extend({
   }).catchall(FileContentsSchema)
 });
 
-const TemplateSchema = z.union([FlashTemplateSchema, IssueTemplateSchema]);
+export const TemplateSchema = z.union([FlashTemplateSchema, IssueTemplateSchema]);
 
 export type File = z.infer<typeof FileContentsSchema>;
 export type FlashTemplateType = z.infer<typeof FlashTemplateSchema>;

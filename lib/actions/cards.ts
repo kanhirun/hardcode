@@ -1,19 +1,19 @@
 import { getCardObjectStore, getTemplateObjectStore } from "@/lib/db";
-import { Card } from '@/lib/models/cards';
+import { CreateCardType, CardType } from '@/lib/models/cards';
 import { TemplateType } from '@/lib/models/templates';
 
 export const createCard = async (templateId: TemplateType['id']): Promise<void> => {
   // TODO: Validate that card exists before creating deck card?
   const cardStore = await getCardObjectStore('readwrite')
 
-  const created: Card = {
+  const created: CreateCardType = {
     templateId,
     reviewAt: new Date()
   }
 
   return new Promise((resolve, reject) => {
     const createRequest = cardStore.add(created);
-    createRequest.onerror = () => { reject(); }
+    createRequest.onerror = reject;
     createRequest.onsuccess = () => { resolve(); }
   });
 }
@@ -23,7 +23,7 @@ export const fetchNextCard = async (): Promise<TemplateType | null> => {
 
   return new Promise((resolve, reject) => {
     let earliestReviewAt = new Date(8640000000000000);
-    let earliestIndexCard: Card | null = null;
+    let earliestIndexCard: CardType | null = null;
 
     const cursor = cardStore.openCursor();
 
@@ -50,13 +50,13 @@ export const fetchNextCard = async (): Promise<TemplateType | null> => {
         reviewAt: futureDate
       });
 
-      updateRequest.onerror = () => reject();
+      updateRequest.onerror = reject;
 
       // Get card details
       updateRequest.onsuccess = async () => {
         const templateStore = await getTemplateObjectStore('readonly');
         const cardRequest = templateStore.get(earliestIndexCard!.templateId) as IDBRequest<TemplateType>;
-        cardRequest.onerror = () => reject();
+        cardRequest.onerror = reject;
         cardRequest.onsuccess = (e) => {
           const found = (e.target as IDBRequest).result as TemplateType;
           resolve(found);
@@ -67,3 +67,26 @@ export const fetchNextCard = async (): Promise<TemplateType | null> => {
 
   })
 };
+
+export const updateCardInputText = async (
+  templateId: TemplateType['id'],
+  text: CardType['submission']
+): Promise<void> => {
+  const cardStore = await getCardObjectStore('readwrite');
+  const found = cardStore.get(templateId);
+
+  return new Promise((resolve, reject) => {
+    found.onerror = () => reject();
+    found.onsuccess = (e) => {
+      const found = (e.target as IDBRequest).result;
+      const args: CardType = {
+        ...found,
+        submission: text
+      }
+      const updated = cardStore.put(args);
+
+      updated.onerror = reject;
+      updated.onsuccess = () => resolve();
+    }
+  });
+}

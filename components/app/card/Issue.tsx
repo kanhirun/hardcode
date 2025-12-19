@@ -10,6 +10,7 @@ import { getFileContents } from '@/lib/actions/templates';
 import { SandboxCodeEditor, SandboxProvider } from '@/components/ui/shadcn-io/sandbox';
 import { useActiveCode } from '@codesandbox/sandpack-react';
 import { File } from '@/lib/models/templates';
+import { updateCardInputText } from '@/lib/actions/cards';
 
 type Props = {
   card: IssueTemplateType;
@@ -49,10 +50,10 @@ function _IssueComponent({
    const webContainer = useContext(WebContainerContext);
    // TODO: Need a way to persist the solution...
    const { code, updateCode } = useActiveCode()
-   const [isDone, setIsDone] = useState(false);
+   const [isSolved, setIsSolved] = useState(false);
 
    const handleRun = useCallback(async (isSkipping: boolean) => {
-     return webContainer!.spawn('node', ['test.js', `(${code})`])
+     const runTest = () => webContainer!.spawn('node', ['test.js', `(${code})`])
        .then(proc => {
          proc.output.pipeTo(new WritableStream({
            write(data) { console.log(data) }
@@ -61,6 +62,8 @@ function _IssueComponent({
        })
        .then(proc => proc.exit)
        .then(code => code === 0);
+
+     return updateCardInputText(card.id, code).then(() => runTest());
    }, [code, webContainer])
 
    const {mutate, isPending} = useMutation({
@@ -70,7 +73,7 @@ function _IssueComponent({
      },
      onSuccess: (isPassed, isSkipping) => {
        if (isSkipping || isPassed) {
-         setIsDone(true);
+         setIsSolved(true);
          handleRunSuccess();
        }
      }
@@ -83,18 +86,18 @@ function _IssueComponent({
    const ButtonGroup = () => {
      return (
        <>
-        <Button className='font-sans' onClick={() => mutate(false)} disabled={isPending || webContainer === null || isDone}>
+        <Button className='font-sans' onClick={() => mutate(false)} disabled={isPending || webContainer === null || isSolved}>
           Run
           { isPending && <LoaderCircle className='animate-spin' /> }
-          { isDone && <CheckCircle /> }
+          { isSolved && <CheckCircle /> }
         </Button>
-        { !isDone && (
+        { !isSolved && (
           <>
-            <Button  variant='outline' disabled={isDone} onClick={() => mutate(true)}>
+            <Button  variant='outline' disabled={isSolved} onClick={() => mutate(true)}>
               Skip
             </Button>
             <CreateCardDialog card={card}>
-              <Button  variant='ghost' disabled={isDone}>
+              <Button  variant='ghost' disabled={isSolved}>
                 <EditIcon />
               </Button>
             </CreateCardDialog>
@@ -125,7 +128,7 @@ function _IssueComponent({
       ) : (
         <div className='flex w-full gap-2'>
           <Input 
-            disabled={isDone}
+            disabled={isSolved}
             className='w-1/2'
             onChange={(e) => {
               updateCode(e.target.value);
