@@ -33,7 +33,7 @@ export const FlashComponent = ({
         </Button> :
         <div className='flex flex-col gap-2'>
           <div>Result:</div>
-          <code>{getFileContents('back.md', card)}</code>
+          <div className='font-mono'>{getFileContents('back.md', card)}</div>
         </div>
       }
     </div>

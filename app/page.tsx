@@ -42,7 +42,7 @@ export default function DeckPage() {
               JavaScript is a high-level programming language for creating dynamic and interactive web pages. It works with HTML and CSS to enhance user interfaces with features like animations and asynchronous data fetching. JavaScript's frameworks and libraries, such as React and Angular, expand its capabilities in modern web development.
             </p>
             <StepButton 
-              hidden={deck.length > 1}
+              hidden={deck.length > 0}
               onClick={() => mutate()}
               className="mt-10"
             >
