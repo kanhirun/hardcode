@@ -1,6 +1,6 @@
 import { useContext, useEffect, useCallback, useState } from 'react';
 import { LoaderCircle, CheckCircle, EditIcon } from 'lucide-react';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { WebContainerContext } from '@/components/app/providers';
@@ -10,14 +10,16 @@ import { getFileContents } from '@/lib/actions/templates';
 import { SandboxCodeEditor, SandboxProvider } from '@/components/ui/shadcn-io/sandbox';
 import { useActiveCode } from '@codesandbox/sandpack-react';
 import { File } from '@/lib/models/templates';
-import { updateCardInputText } from '@/lib/actions/cards';
+import { getCard as queryFn, updateCardInputText } from '@/lib/actions/cards';
+import { type CardType } from '@/lib/models/cards';
 
 type Props = {
   card: IssueTemplateType;
   onRunSuccess: () => void;
+  onRunFinished: (submissionText: string) => void;
 }
 
-const prepareFiles = (files: Record<string, File>) => {
+const prepareFiles = (files: Record<string, File>, submissionText?: CardType['submission']): Record<string, { code: string, active: boolean }> => {
   const res: any = {};
 
   for (const [filename, obj] of Object.entries(files)) {
@@ -35,9 +37,21 @@ const prepareFiles = (files: Record<string, File>) => {
 }
 
 export const IssueComponent = (props: Props) => {
+  const [files, setFiles] = useState(prepareFiles(props.card.files))
+
+  const handleRunFinished = (submissionText: string) => {
+    setFiles({
+      ...files,
+      ['solution.js']: { 
+        code: submissionText,
+        active: true
+      }
+    });
+  }
+
   return (
-    <SandboxProvider theme='dark' files={prepareFiles(props.card.files)}>
-      <_IssueComponent {...props}/>
+    <SandboxProvider theme='dark' files={files}>
+      <_IssueComponent {...props} onRunFinished={handleRunFinished}/>
     </SandboxProvider>
   );
 }
@@ -46,14 +60,14 @@ export const IssueComponent = (props: Props) => {
 function _IssueComponent({
   card,
   onRunSuccess: handleRunSuccess,
+  onRunFinished: handleRunFinished,
 }: Props) {
    const webContainer = useContext(WebContainerContext);
-   // TODO: Need a way to persist the solution...
-   const { code, updateCode } = useActiveCode()
    const [isSolved, setIsSolved] = useState(false);
+   const { code, updateCode } = useActiveCode()
 
-   const handleRun = useCallback(async (isSkipping: boolean) => {
-     const runTest = () => webContainer!.spawn('node', ['test.js', `(${code})`])
+   const mutationFn = useCallback(async (isSkipping: boolean) => {
+     const runTest = webContainer!.spawn('node', ['test.js', `(${code})`])
        .then(proc => {
          proc.output.pipeTo(new WritableStream({
            write(data) { console.log(data) }
@@ -63,19 +77,27 @@ function _IssueComponent({
        .then(proc => proc.exit)
        .then(code => code === 0);
 
-     return updateCardInputText(card.id, code).then(() => runTest());
-   }, [code, webContainer])
+     return updateCardInputText(card.id, code).then(() => runTest);
+   }, [card, webContainer, code])
 
-   const {mutate, isPending} = useMutation({
-     mutationFn: handleRun,
+   const handleRun = useMutation({
+     mutationFn,
      onError: (e) => {
        console.error(e);
      },
      onSuccess: (isPassed, isSkipping) => {
-       if (isSkipping || isPassed) {
+       if (isSkipping) {
          setIsSolved(true);
-         handleRunSuccess();
        }
+
+       if (!isPassed) {
+         // Handle failure?
+         return;
+       }
+
+       setIsSolved(true);
+       handleRunSuccess();
+       handleRunFinished(code);
      }
    });
 
@@ -86,14 +108,14 @@ function _IssueComponent({
    const ButtonGroup = () => {
      return (
        <>
-        <Button className='font-sans' onClick={() => mutate(false)} disabled={isPending || webContainer === null || isSolved}>
+        <Button className='font-sans' onClick={() => handleRun.mutate(false)} disabled={handleRun.isPending || webContainer === null || isSolved}>
           Run
-          { isPending && <LoaderCircle className='animate-spin' /> }
+          { handleRun.isPending && <LoaderCircle className='animate-spin' /> }
           { isSolved && <CheckCircle /> }
         </Button>
         { !isSolved && (
           <>
-            <Button  variant='outline' disabled={isSolved} onClick={() => mutate(true)}>
+            <Button  variant='outline' disabled={isSolved} onClick={() => handleRun.mutate(true)}>
               Skip
             </Button>
             <CreateCardDialog card={card}>

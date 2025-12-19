@@ -18,8 +18,22 @@ export const createCard = async (templateId: TemplateType['id']): Promise<void> 
   });
 }
 
+export const getCard = async (id: CardType['templateId']): Promise<CardType> => {
+  const cardStore = await getCardObjectStore('readwrite');
+
+  const found = cardStore.get(id);
+
+  return new Promise((resolve, reject) => {
+    found.onerror = reject;
+    found.onsuccess = (e) => {
+      const res = (e.target as IDBRequest).result;
+      resolve(res);
+    }
+  });
+}
+
 export const fetchNextCard = async (): Promise<TemplateType | null> => {
-  const cardStore = await getCardObjectStore('readwrite')
+  const cardStore = await getCardObjectStore('readwrite');
 
   return new Promise((resolve, reject) => {
     let earliestReviewAt = new Date(8640000000000000);
