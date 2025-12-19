@@ -1,9 +1,9 @@
-import { Card, CardType } from '@/lib/models/cards';
-import { TaskComponent } from './Task';
+import { TemplateType, TemplateEnum } from '@/lib/models/templates';
+import { IssueComponent } from './Issue';
 import { FlashComponent } from './Flash';
 
 type CardProps = {
-  card: Card;
+  card: TemplateType;
   onRunSuccess: () => void;
   children?: React.ReactNode;
 }
@@ -14,10 +14,10 @@ export const CardComponent = ({
   children
 }: CardProps) => {
   switch (card.type) {
-    case CardType.Flash:
+    case TemplateEnum.Flash:
       return <FlashComponent card={card} onShowAnswer={handleRunSuccess} />;
-    case CardType.Task:
-      return <TaskComponent card={card} onRunSuccess={handleRunSuccess}/>;
+    case TemplateEnum.Task:
+      return <IssueComponent card={card} onRunSuccess={handleRunSuccess}/>;
   default:
     console.error('Unable to render card');
     return <></>

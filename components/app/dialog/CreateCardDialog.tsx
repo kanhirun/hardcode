@@ -11,26 +11,26 @@ import {
 import { useMutation } from '@tanstack/react-query';
 import { useReducer } from 'react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { CardType, UpdateTaskCardProps, CreateFlashCardProps, CreateTaskCardProps, UpdateAnyCardProps, UpdateFlashCardProps } from '@/lib/models/cards';
-import { getFileContents, createCard } from '@/lib/actions/cards';
+import { TemplateEnum, UpdateIssueTemplateType, CreateFlashTemplateType, CreateTaskTemplateType, UpdateAnyTemplateType, UpdateFlashTemplateType } from '@/lib/models/templates';
+import { getFileContents, createTemplate } from '@/lib/actions/templates';
 
 type Props = {
-  card?: UpdateAnyCardProps;
+  card?: UpdateAnyTemplateType;
   children?: React.ReactNode
 };
 
 type State = {
   isOpen: boolean;
-  selected: CardType,
-  flashProps: CreateFlashCardProps | UpdateFlashCardProps,
-  taskProps: CreateTaskCardProps | UpdateTaskCardProps,
+  selected: TemplateEnum,
+  flashProps: CreateFlashTemplateType | UpdateFlashTemplateType,
+  issueProps: CreateTaskTemplateType | UpdateIssueTemplateType,
 }
 
 type Action = 
   {
     type: 'UPDATE_FILE',
     payload: {
-      cardType: CardType,
+      cardType: TemplateEnum,
       filename: string,
       contents: string,
     }
@@ -41,7 +41,7 @@ type Action =
   {
     type: 'SELECT_CARD_TYPE',
     payload: {
-      cardType: CardType
+      cardType: TemplateEnum
     }
   } |
   {
@@ -54,16 +54,16 @@ const EMPTY_FILE_CONTENTS = {
   }
 }
 
-const EMPTY_FLASH: CreateFlashCardProps = {
-  type: CardType.Flash,
+const EMPTY_FLASH: CreateFlashTemplateType = {
+  type: TemplateEnum.Flash,
   files: {
     "front.md": EMPTY_FILE_CONTENTS,
     "back.md": EMPTY_FILE_CONTENTS
   }
 }
 
-const EMPTY_TASK: CreateTaskCardProps = {
-  type: CardType.Task,
+const EMPTY_TASK: CreateTaskTemplateType = {
+  type: TemplateEnum.Task,
   files: {
     "index.md": EMPTY_FILE_CONTENTS,
     "test.js": {
@@ -99,13 +99,13 @@ const reducer = (state: State, action: Action): State => {
     case 'CLEAR_INPUTS':
       return {
         isOpen: false,  // also clses dialog
-        selected: CardType.Flash,
+        selected: TemplateEnum.Flash,
         flashProps: EMPTY_FLASH,
-        taskProps: EMPTY_TASK,
+        issueProps: EMPTY_TASK,
       }
     case 'UPDATE_FILE': 
       switch (action.payload.cardType) {
-        case CardType.Flash: {
+        case TemplateEnum.Flash: {
           return {
             ...state,
             // @ts-ignore
@@ -122,14 +122,14 @@ const reducer = (state: State, action: Action): State => {
             }
           }
         }
-        case CardType.Task: {
+        case TemplateEnum.Task: {
           return {
             ...state,
             // @ts-ignore
-            taskProps: {
-              ...state.taskProps,
+            issueProps: {
+              ...state.issueProps,
               files: {
-                ...state.taskProps.files,
+                ...state.issueProps.files,
                 [action.payload.filename]: {
                   file: {
                     contents: action.payload.contents
@@ -155,14 +155,14 @@ export const CreateCardDialog = ({
 }: Props) => {
   const initState: State = {
     isOpen: false,
-    selected: cardToUpdate?.type || CardType.Flash,
-    flashProps: cardToUpdate?.type === CardType.Flash ? cardToUpdate : EMPTY_FLASH,
-    taskProps: cardToUpdate?.type === CardType.Task ? cardToUpdate : EMPTY_TASK
+    selected: cardToUpdate?.type || TemplateEnum.Flash,
+    flashProps: cardToUpdate?.type === TemplateEnum.Flash ? cardToUpdate : EMPTY_FLASH,
+    issueProps: cardToUpdate?.type === TemplateEnum.Task ? cardToUpdate : EMPTY_TASK
   }
 
   const [state, dispatch] = useReducer(reducer, initState);
   const {mutate, isPending} = useMutation({ 
-    mutationFn: createCard,
+    mutationFn: createTemplate,
     onError: (err) => {
       console.error(err);
     },
@@ -179,11 +179,11 @@ export const CreateCardDialog = ({
       <DialogContent style={{ maxWidth: 'none', width: '1000px' }}>
         <Tabs defaultValue={state.selected.toString()}>
           <TabsList>
-            <TabsTrigger value={CardType.Flash.toString()} onClick={() => dispatch({ type: 'SELECT_CARD_TYPE', payload: { cardType: CardType.Flash }})}>
+            <TabsTrigger value={TemplateEnum.Flash.toString()} onClick={() => dispatch({ type: 'SELECT_CARD_TYPE', payload: { cardType: TemplateEnum.Flash }})}>
               <SplitSquareHorizontal />
               Flash Card
             </TabsTrigger>
-            <TabsTrigger value={CardType.Task.toString()} onClick={() => dispatch({ type: 'SELECT_CARD_TYPE', payload: { cardType: CardType.Task }})}>
+            <TabsTrigger value={TemplateEnum.Task.toString()} onClick={() => dispatch({ type: 'SELECT_CARD_TYPE', payload: { cardType: TemplateEnum.Task }})}>
               <SplitSquareVertical />
               Task Card
             </TabsTrigger>
@@ -192,11 +192,11 @@ export const CreateCardDialog = ({
             onSubmit={e => {
               e.preventDefault();
               switch (state.selected) {
-                case CardType.Flash:
+                case TemplateEnum.Flash:
                   mutate(state.flashProps);
                   break;
-                case CardType.Task:
-                  mutate(state.taskProps);
+                case TemplateEnum.Task:
+                  mutate(state.issueProps);
                   break;
                 default:
                   console.error('Failed to create');
@@ -204,7 +204,7 @@ export const CreateCardDialog = ({
             }}
             className='flex flex-col h-150 space-y-4'
           >
-            <TabsContent value={CardType.Flash.toString()}>
+            <TabsContent value={TemplateEnum.Flash.toString()}>
               <div className='flex gap-2 h-full font-mono'>
                 <textarea
                   id='front.md'
@@ -212,7 +212,7 @@ export const CreateCardDialog = ({
                   onChange={e => dispatch({
                     type: 'UPDATE_FILE',
                     payload: {
-                      cardType: CardType.Flash,
+                      cardType: TemplateEnum.Flash,
                       filename: 'front.md',
                       contents: e.target.value
                     }
@@ -227,7 +227,7 @@ export const CreateCardDialog = ({
                     dispatch({
                       type: 'UPDATE_FILE',
                       payload: {
-                        cardType: CardType.Flash,
+                        cardType: TemplateEnum.Flash,
                         filename: 'back.md',
                         contents: e.target.value
                       }
@@ -238,17 +238,17 @@ export const CreateCardDialog = ({
                 />
               </div>
             </TabsContent>
-            <TabsContent value={CardType.Task.toString()}>
+            <TabsContent value={TemplateEnum.Task.toString()}>
               <div className='flex h-full gap-2'>
                 <div className='flex flex-col gap-2 w-full'>
                   <textarea
                     id='index.md'
-                    value={getFileContents('index.md', state.taskProps)}
+                    value={getFileContents('index.md', state.issueProps)}
                     placeholder='Instructions...'
                     onChange={e => dispatch({
                       type: 'UPDATE_FILE',
                       payload: {
-                        cardType: CardType.Task,
+                        cardType: TemplateEnum.Task,
                         filename: 'index.md',
                         contents: e.target.value
                       }
@@ -259,11 +259,11 @@ export const CreateCardDialog = ({
                   <textarea
                     id='template.js'
                     placeholder='Template, optional...'
-                    value={getFileContents('template.js', state.taskProps)}
+                    value={getFileContents('template.js', state.issueProps)}
                     onChange={e => dispatch({
                       type: 'UPDATE_FILE',
                       payload: {
-                        cardType: CardType.Task,
+                        cardType: TemplateEnum.Task,
                         filename: 'template.js',
                         contents: e.target.value
                       }
@@ -275,19 +275,19 @@ export const CreateCardDialog = ({
                   <textarea
                     id='test.js'
                     value={
-                      getFileContents('test.js', state.taskProps)
+                      getFileContents('test.js', state.issueProps)
                     }
                     placeholder='Tests...'
                     onChange={e => dispatch({
                       type: 'UPDATE_FILE',
                       payload: {
-                        cardType: CardType.Task,
+                        cardType: TemplateEnum.Task,
                         filename: 'test.js',
                         contents: e.target.value
                       }
                     })}
                     className='w-full h-full p-2 border rounded-md font-mono resize-none overflow-auto'
-                    required={state.selected === CardType.Task}
+                    required={state.selected === TemplateEnum.Task}
                   />
                 </div>
               </div>

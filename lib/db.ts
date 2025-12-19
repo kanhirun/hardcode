@@ -34,3 +34,14 @@ export const getDB = (): Promise<IDBDatabase> => {
   });
 };
 
+export const getTemplateObjectStore = async (mode: IDBTransactionMode) => {
+  const tableName = 'templates';
+  const db = await getDB();
+  return db.transaction(tableName, mode).objectStore(tableName);
+}
+
+export const getCardObjectStore = async (mode: IDBTransactionMode) => {
+  const tableName = 'cards';
+  const db = await getDB();
+  return db.transaction(tableName, mode).objectStore(tableName);
+}

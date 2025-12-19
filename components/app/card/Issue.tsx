@@ -5,14 +5,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { WebContainerContext } from '@/components/app/providers';
 import { CreateCardDialog } from '@/components/app/dialog';
-import { TaskCard } from '@/lib/models/cards';
-import { getFileContents } from '@/lib/actions/cards';
+import { IssueTemplateType } from '@/lib/models/templates';
+import { getFileContents } from '@/lib/actions/templates';
 import { SandboxCodeEditor, SandboxProvider } from '@/components/ui/shadcn-io/sandbox';
 import { useActiveCode } from '@codesandbox/sandpack-react';
-import { File } from '@/lib/models/cards';
+import { File } from '@/lib/models/templates';
 
 type Props = {
-  card: TaskCard;
+  card: IssueTemplateType;
   onRunSuccess: () => void;
 }
 
@@ -33,16 +33,16 @@ const prepareFiles = (files: Record<string, File>) => {
   return res;
 }
 
-export const TaskComponent = (props: Props) => {
+export const IssueComponent = (props: Props) => {
   return (
     <SandboxProvider theme='dark' files={prepareFiles(props.card.files)}>
-      <_TaskComponent {...props}/>
+      <_IssueComponent {...props}/>
     </SandboxProvider>
   );
 }
 
 
-function _TaskComponent({
+function _IssueComponent({
   card,
   onRunSuccess: handleRunSuccess,
 }: Props) {

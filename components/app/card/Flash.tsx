@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import type { FlashCardProps } from '@/lib/models/cards'
-import { getFileContents } from '@/lib/actions/cards';
+import type { FlashTemplateType } from '@/lib/models/templates'
+import { getFileContents } from '@/lib/actions/templates';
 
 type ComponentProps = {
-  card: FlashCardProps;
+  card: FlashTemplateType;
   onShowAnswer: () => void;
 }
 

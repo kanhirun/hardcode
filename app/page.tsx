@@ -3,13 +3,13 @@
 import { useState, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Toolbar, StepButton, CardComponent } from '@/components/app';
-import { Card } from '@/lib/models/cards';
-import { fetchNextIndexCard as mutationFn } from '@/lib/actions/indexCards';
+import { TemplateType } from '@/lib/models/templates';
+import { fetchNextCard as mutationFn } from '@/lib/actions/cards';
 
 export default function DeckPage() {
   const queryClient = useQueryClient();
 
-  const [deck, setDeck] = useState<Card[]>([]);
+  const [deck, setDeck] = useState<TemplateType[]>([]);
   const { mutate: fetchNextIndexCard } = useMutation({
     mutationFn,
     onError: (e) => {
