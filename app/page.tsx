@@ -1,15 +1,17 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Toolbar, StepButton, CardComponent } from '@/components/app';
 import { Card } from '@/lib/models/cards';
-import { fetchNextIndexCard } from '@/lib/actions/indexCards';
+import { fetchNextIndexCard as mutationFn } from '@/lib/actions/indexCards';
 
 export default function DeckPage() {
+  const queryClient = useQueryClient();
+
   const [deck, setDeck] = useState<Card[]>([]);
-  const { mutate } = useMutation({
-    mutationFn: fetchNextIndexCard,
+  const { mutate: fetchNextIndexCard } = useMutation({
+    mutationFn,
     onError: (e) => {
       console.error(e);
     },
@@ -19,9 +21,8 @@ export default function DeckPage() {
         return;
       }
 
-
+      queryClient.setQueryData(['cards', card.id], card);
       setDeck([ ...deck, card ]);
-
     })
   });
 
@@ -43,7 +44,7 @@ export default function DeckPage() {
             </p>
             <StepButton 
               hidden={deck.length > 0}
-              onClick={() => mutate()}
+              onClick={() => fetchNextIndexCard()}
               className="mt-10"
             >
               Start
@@ -55,7 +56,7 @@ export default function DeckPage() {
                   <CardComponent 
                     key={idx}
                     card={card}
-                    onRunSuccess={() => mutate()}
+                    onRunSuccess={() => fetchNextIndexCard()}
                   />
             ))}
           </section>

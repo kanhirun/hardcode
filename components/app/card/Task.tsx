@@ -46,7 +46,6 @@ function _TaskComponent({
   card,
   onRunSuccess: handleRunSuccess,
 }: Props) {
-   let taskLoaded: Promise<void> | undefined;
    const webContainer = useContext(WebContainerContext);
    // TODO: Need a way to persist the solution...
    const { code, updateCode } = useActiveCode()
@@ -78,7 +77,7 @@ function _TaskComponent({
    });
 
    useEffect(() => {
-     taskLoaded = webContainer?.fs.writeFile('test.js', card.files['test.js'].file.contents);
+     webContainer?.fs.writeFile('test.js', card.files['test.js'].file.contents);
    }, [webContainer, card]);
 
    const ButtonGroup = () => {
