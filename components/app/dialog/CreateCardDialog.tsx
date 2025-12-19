@@ -240,7 +240,7 @@ export const CreateCardDialog = ({
             </TabsContent>
             <TabsContent value={CardType.Task.toString()}>
               <div className='flex h-full gap-2'>
-                <div className='flex w-full'>
+                <div className='flex flex-col gap-2 w-full'>
                   <textarea
                     id='index.md'
                     value={getFileContents('index.md', state.taskProps)}
@@ -256,8 +256,6 @@ export const CreateCardDialog = ({
                     className='flex-1 p-2 border rounded-md font-mono resize-none overflow-auto'
                     required
                   />
-                </div>
-                <div className='flex flex-col gap-2 w-full'>
                   <textarea
                     id='template.js'
                     placeholder='Template, optional...'
@@ -272,6 +270,8 @@ export const CreateCardDialog = ({
                     })}
                     className='p-2 border rounded-md font-mono h-30'
                   />
+                </div>
+                <div className='flex w-full'>
                   <textarea
                     id='test.js'
                     value={
