@@ -9,14 +9,14 @@ export const getFileContents = (filename: string, card: CreateAnyCardProps | Upd
 
 export const createCard = async (props: CreateAnyCardProps | UpdateAnyCardProps): Promise<void>  => {
   const db = await getDB();
-  const cardObjectStore = db.transaction('cards', 'readwrite').objectStore('cards');
+  const cardObjectStore = db.transaction('templates', 'readwrite').objectStore('templates');
 
   if (props.id) {
     const data = UpdateAnyCardSchema.parse(props);
     const updateRequest = cardObjectStore.put(data);
     return new Promise((resolve, reject) => {
       updateRequest.onerror   = (e) => reject(e);
-      updateRequest.onsuccess = (e) => resolve();
+      updateRequest.onsuccess = (_) => resolve();
     });
   }
 

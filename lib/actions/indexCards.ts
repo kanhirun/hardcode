@@ -2,15 +2,15 @@ import { getDB } from "@/lib/db";
 import { IndexCard } from '@/lib/models/decks';
 import { Card } from '@/lib/models/cards';
 
-export const createIndexCard = async (cardId: Card['id']): Promise<void> => {
+export const createIndexCard = async (templateId: Card['id']): Promise<void> => {
   // TODO: Validate that card exists before creating deck card?
   const db = await getDB();
   const indexObjectStore = db
-    .transaction('indexCards', 'readwrite')
-    .objectStore('indexCards');
+    .transaction('cards', 'readwrite')
+    .objectStore('cards');
 
   const created: IndexCard = {
-    cardId,
+    templateId,
     reviewAt: new Date()
   }
 
@@ -24,8 +24,8 @@ export const createIndexCard = async (cardId: Card['id']): Promise<void> => {
 export const fetchNextIndexCard = async (): Promise<Card | null> => {
   const db = await getDB();
   const indexCardStore = db
-    .transaction('indexCards', 'readwrite')
-    .objectStore('indexCards');
+    .transaction('cards', 'readwrite')
+    .objectStore('cards');
 
   return new Promise((resolve, reject) => {
     let earliestReviewAt = new Date(8640000000000000);
@@ -61,9 +61,9 @@ export const fetchNextIndexCard = async (): Promise<Card | null> => {
       // Get card details
       updateRequest.onsuccess = () => {
         const cardObjectStore = db
-          .transaction('cards', 'readonly')
-          .objectStore('cards');
-        const cardRequest = cardObjectStore.get(earliestIndexCard!.cardId) as IDBRequest<Card>;
+          .transaction('templates', 'readonly')
+          .objectStore('templates');
+        const cardRequest = cardObjectStore.get(earliestIndexCard!.templateId) as IDBRequest<Card>;
         cardRequest.onerror = () => reject();
         cardRequest.onsuccess = (e) => {
           const found = (e.target as IDBRequest).result as Card;

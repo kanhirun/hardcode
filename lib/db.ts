@@ -18,12 +18,12 @@ export const getDB = (): Promise<IDBDatabase> => {
     req.onupgradeneeded = (e) => {
       const db = (e.target as IDBOpenDBRequest).result;
 
-      if (!db.objectStoreNames.contains('cards')) {
-        db.createObjectStore("cards", { keyPath: 'id', autoIncrement: true });
+      if (!db.objectStoreNames.contains('templates')) {
+        db.createObjectStore("templates", { keyPath: 'id', autoIncrement: true });
       }
 
-      if (!db.objectStoreNames.contains('decks')) {
-        db.createObjectStore("indexCards", { keyPath: 'cardId' });
+      if (!db.objectStoreNames.contains('cards')) {
+        db.createObjectStore("cards", { keyPath: 'templateId' });
       }
     }
     
