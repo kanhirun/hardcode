@@ -1,6 +1,6 @@
 import { useContext, useEffect, useCallback, useState } from 'react';
 import { LoaderCircle, CheckCircle, EditIcon } from 'lucide-react';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { WebContainerContext } from '@/components/app/providers';
@@ -10,7 +10,7 @@ import { getFileContents } from '@/lib/actions/templates';
 import { SandboxCodeEditor, SandboxProvider } from '@/components/ui/shadcn-io/sandbox';
 import { useActiveCode } from '@codesandbox/sandpack-react';
 import { File } from '@/lib/models/templates';
-import { getCard as queryFn, updateCardInputText } from '@/lib/actions/cards';
+import { updateCardInputText } from '@/lib/actions/cards';
 import { type CardType } from '@/lib/models/cards';
 
 type Props = {
@@ -19,7 +19,7 @@ type Props = {
   onRunFinished: (submissionText: string) => void;
 }
 
-const prepareFiles = (files: Record<string, File>, submissionText?: CardType['submission']): Record<string, { code: string, active: boolean }> => {
+const prepareFiles = (files: Record<string, File>): Record<string, { code: string, active: boolean }> => {
   const res: any = {};
 
   for (const [filename, obj] of Object.entries(files)) {
@@ -66,7 +66,7 @@ function _IssueComponent({
    const [isSolved, setIsSolved] = useState(false);
    const { code, updateCode } = useActiveCode()
 
-   const mutationFn = useCallback(async (isSkipping: boolean) => {
+   const mutationFn = useCallback(async () => {
      const runTest = webContainer!.spawn('node', ['test.js', `(${code})`])
        .then(proc => {
          proc.output.pipeTo(new WritableStream({
@@ -80,16 +80,18 @@ function _IssueComponent({
      return updateCardInputText(card.id, code).then(() => runTest);
    }, [card, webContainer, code])
 
+   const handleSkip = useCallback(() => {
+     setIsSolved(true);
+     handleRunSuccess();
+     handleRunFinished(code);
+   }, [])
+
    const handleRun = useMutation({
      mutationFn,
      onError: (e) => {
        console.error(e);
      },
-     onSuccess: (isPassed, isSkipping) => {
-       if (isSkipping) {
-         setIsSolved(true);
-       }
-
+     onSuccess: (isPassed) => {
        if (!isPassed) {
          // Handle failure?
          return;
@@ -108,14 +110,14 @@ function _IssueComponent({
    const ButtonGroup = () => {
      return (
        <>
-        <Button className='font-sans' onClick={() => handleRun.mutate(false)} disabled={handleRun.isPending || webContainer === null || isSolved}>
+        <Button className='font-sans' onClick={() => handleRun.mutate()} disabled={handleRun.isPending || webContainer === null || isSolved}>
           Run
           { handleRun.isPending && <LoaderCircle className='animate-spin' /> }
           { isSolved && <CheckCircle /> }
         </Button>
         { !isSolved && (
           <>
-            <Button  variant='outline' disabled={isSolved} onClick={() => handleRun.mutate(true)}>
+            <Button  variant='outline' disabled={isSolved} onClick={() => handleSkip()}>
               Skip
             </Button>
             <CreateCardDialog card={card}>
