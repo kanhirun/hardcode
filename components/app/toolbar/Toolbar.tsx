@@ -8,12 +8,12 @@ export const Toolbar = ({ className }: { className: string }) => {
     <div className={clsx('flex justify-end gap-4 mt-20 mx-20', className)}>
       <Button variant='outline'>
         <Import />
-        Import cards
+        Import
       </Button>
       <CreateCardDialog>
         <Button variant='secondary'>
           <Plus />
-          Add card
+          Add
         </Button>
       </CreateCardDialog>
     </div>
