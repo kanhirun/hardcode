@@ -1,3 +1,3 @@
 export { CardComponent } from './Card';
-export { TaskComponent } from './Task';
+export thing as TaskComponent from './Task';
 

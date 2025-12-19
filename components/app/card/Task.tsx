@@ -7,24 +7,53 @@ import { WebContainerContext } from '@/components/app/providers';
 import { CreateCardDialog } from '@/components/app/dialog';
 import { TaskCard } from '@/lib/models/cards';
 import { getFileContents } from '@/lib/actions/cards';
+import { SandboxCodeEditor, SandboxProvider } from '@/components/ui/shadcn-io/sandbox';
+import { useActiveCode } from '@codesandbox/sandpack-react';
+import { File } from '@/lib/models/cards';
 
 type Props = {
   card: TaskCard;
   onRunSuccess: () => void;
 }
 
+const prepareFiles = (files: Record<string, File>) => {
+  const res: any = {};
 
-export const TaskComponent = ({
+  for (const [filename, obj] of Object.entries(files)) {
+    res[filename] = {
+      code: obj.file.contents
+    }
+  }
+
+  res['solution.js'] = {
+    code: res['template.js'].code || '',
+    active: true,
+  }
+
+  return res;
+}
+
+export const TaskComponent = (props: Props) => {
+  return (
+    <SandboxProvider theme='dark' files={prepareFiles(props.card.files)}>
+      <_TaskComponent {...props}/>
+    </SandboxProvider>
+  );
+}
+
+
+function _TaskComponent({
   card,
   onRunSuccess: handleRunSuccess,
-}: Props) => {
+}: Props) {
    let taskLoaded: Promise<void> | undefined;
    const webContainer = useContext(WebContainerContext);
-   const [inputText, setInputText] = useState(card.files['template.js'].file.contents);
+   // TODO: Need a way to persist the solution...
+   const { code, updateCode } = useActiveCode()
    const [isDone, setIsDone] = useState(false);
 
    const handleRun = useCallback(async (isSkipping: boolean) => {
-     return webContainer!.spawn('node', ['test.js', `(${inputText})`])
+     return webContainer!.spawn('node', ['test.js', `(${code})`])
        .then(proc => {
          proc.output.pipeTo(new WritableStream({
            write(data) { console.log(data) }
@@ -33,7 +62,7 @@ export const TaskComponent = ({
        })
        .then(proc => proc.exit)
        .then(code => code === 0);
-   }, [inputText, webContainer])
+   }, [code, webContainer])
 
    const {mutate, isPending} = useMutation({
      mutationFn: handleRun,
@@ -60,21 +89,25 @@ export const TaskComponent = ({
           { isPending && <LoaderCircle className='animate-spin' /> }
           { isDone && <CheckCircle /> }
         </Button>
-        <Button  variant='outline' disabled={isDone} onClick={() => mutate(true)}>
-          Skip
-        </Button>
-        <CreateCardDialog card={card}>
-          <Button  variant='ghost' disabled={isDone}>
-            <EditIcon />
-          </Button>
-        </CreateCardDialog>
+        { !isDone && (
+          <>
+            <Button  variant='outline' disabled={isDone} onClick={() => mutate(true)}>
+              Skip
+            </Button>
+            <CreateCardDialog card={card}>
+              <Button  variant='ghost' disabled={isDone}>
+                <EditIcon />
+              </Button>
+            </CreateCardDialog>
+          </>
+        )}
       </>
      )
    };
 
   return (
     <div className='
-      flex flex-col items-start gap-8 p-6 rounded
+      flex flex-col items-start gap-4 p-6 rounded
       font-mono text-card-foreground bg-card
     '>
       <p className='whitespace-pre-line'>
@@ -82,13 +115,9 @@ export const TaskComponent = ({
       </p>
       { card.files['template.js'].file.contents.length > 0 ? (
         <div className='flex flex-col gap-4 w-full'>
-          <textarea
-            disabled={isDone}
-            className='w-full h-100 overflow-auto resize-none p-4 bg-background rounded'
-            value={inputText}
-            onChange={(e) => {
-              setInputText(e.target.value);
-            }}
+          <SandboxCodeEditor 
+            showLineNumbers
+            className='rounded'
           />
           <div className='flex gap-2'>
             <ButtonGroup />
@@ -100,7 +129,7 @@ export const TaskComponent = ({
             disabled={isDone}
             className='w-1/2'
             onChange={(e) => {
-              setInputText(e.target.value);
+              updateCode(e.target.value);
             }}
           />
           <ButtonGroup />
@@ -108,5 +137,5 @@ export const TaskComponent = ({
       )}
     </div>
   )
-}
+};
 
