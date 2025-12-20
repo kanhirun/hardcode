@@ -50,7 +50,7 @@ export const IssueComponent = (props: Props) => {
   }
 
   return (
-    <SandboxProvider theme='dark' files={files}>
+    <SandboxProvider theme='dark' files={files} style={{ fontSize: '14px' }}>
       <_IssueComponent {...props} onRunFinished={handleRunFinished}/>
     </SandboxProvider>
   );
@@ -121,7 +121,7 @@ function _IssueComponent({
               Skip
             </Button>
             <CreateCardDialog card={card}>
-              <Button  variant='ghost' disabled={isSolved}>
+              <Button  variant='ghost' disabled={isSolved} className='ml-auto'>
                 <EditIcon />
               </Button>
             </CreateCardDialog>
