@@ -1,5 +1,6 @@
 import { useContext, useEffect, useCallback, useState } from 'react';
 import { LoaderCircle, CheckCircle, EditIcon } from 'lucide-react';
+import Markdown from 'react-markdown';
 import { useMutation } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -136,9 +137,9 @@ function _IssueComponent({
       flex flex-col items-start gap-4 p-6 rounded
       font-mono text-card-foreground bg-card
     '>
-      <p className='whitespace-pre-line'>
+      <Markdown>
         {getFileContents('index.md', card)}
-      </p>
+      </Markdown>
       { card.files['template.js'].file.contents.length > 0 ? (
         <div className='flex flex-col gap-4 w-full'>
           <SandboxCodeEditor 
